@@ -18,13 +18,13 @@ public class File {
     @GeneratedValue
     public UUID fileid;
     public String filepath;
-    public int fileserver;
+    List<Integer> fileservers;
 
 //    public String userid;
 
-    public File (String filepath, int fileserver, String userid) {
+    public File (String filepath, List<Integer>fileservers, String userid) {
         this.filepath = filepath;
-        this.fileserver = fileserver;
+        this.fileservers = fileservers;
 //        this.userid = userid;
         this.user = new User(userid);
     }
@@ -39,7 +39,7 @@ public class File {
 
     @Override
     public String toString() {
-        return "File [" + fileid + ", " + filepath + ", " + fileserver +  ", " + user.userid + "]";
+        return "File [" + fileid + ", " + filepath + ", " + fileservers.toString() +  ", " + user.userid + "]";
     }
 
     @Override

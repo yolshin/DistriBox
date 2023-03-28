@@ -27,6 +27,7 @@ public class User {
 		this.userid = userID;
 //		this.files = new ArrayList<>();
 	}
+	//TODO: Query all the user's files
 //
 //	/**
 //	 * Query all the user's files

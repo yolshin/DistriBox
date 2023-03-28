@@ -43,11 +43,12 @@ class DistriBoxApplicationTests {
 
 		users.forEach(usersRepository::save);
 
+		List<Integer> servers = Arrays.asList(0, 1, 2);
 		files = new ArrayList<>();
-		files.add(new File("benFile", 0, "benE"));
-		files.add(new File("file1", 0, "mberk"));
-		files.add(new File("bernerFile", 0, "yberner"));
-		files.add(new File("olFile", 0, "yolshin"));
+		files.add(new File("benFile", servers, "benE"));
+		files.add(new File("file1", servers, "mberk"));
+		files.add(new File("bernerFile", servers, "yberner"));
+		files.add(new File("olFile", servers, "yolshin"));
 
 		files.forEach(filesRepository::save);
 	}
