@@ -61,7 +61,7 @@ class DistriBoxApplicationTests {
 		actualUsers.sort(Comparator.comparing(u -> u.userid));
 		assertArrayEquals(actualUsers.toArray(), users.toArray());
 		for (User u: actualUsers) {
-//			assertEquals(u.files.size(), 1);
+			assertEquals(u.files.size(), 1);
 		}
 		for (int i = 0; i < actualFiles.size(); i++) {
 			File f = actualFiles.get(i);

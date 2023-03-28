@@ -17,29 +17,23 @@ public class User {
 			sequenceName = "user_sequence",
 			allocationSize = 1
 	)
-//	@GeneratedValue(
-//			strategy = GenerationType.SEQUENCE,
-//			generator = "user_sequence"
-//	)
 	public String userid;
 
 	public User(String userID) {
 		this.userid = userID;
-//		this.files = new ArrayList<>();
 	}
-	//TODO: Query all the user's files
-//
-//	/**
-//	 * Query all the user's files
-//	 */
-//	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-//	public List<File> files;
+
+	/**
+	 * Query all the user's files
+	 */
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+	public List<File> files;
 
 	protected User() {}
 
 	@Override
 	public String toString() {
-		return "User [" + userid + " files: " + "]";
+		return "User [" + userid + " files: " + files.toString() + "]";
 	}
 
 	@Override
