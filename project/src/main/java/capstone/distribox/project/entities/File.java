@@ -20,12 +20,9 @@ public class File {
     public String filepath;
     List<Integer> fileservers;
 
-//    public String userid;
-
     public File (String filepath, List<Integer>fileservers, String userid) {
         this.filepath = filepath;
         this.fileservers = fileservers;
-//        this.userid = userid;
         this.user = new User(userid);
     }
 
