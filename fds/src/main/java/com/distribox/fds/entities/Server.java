@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
@@ -25,8 +23,26 @@ public class Server {
 
 	public State state = State.WAITING;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "server")
-	public List<File> files;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name = "server_files",
+			joinColumns = @JoinColumn(name = "server_id"),
+			inverseJoinColumns = @JoinColumn(name = "file_id")
+	)
+	public Set<File> files = new HashSet<>();
+
+	public void addFile(File file) {
+		if (files.add(file)) {
+			file.addServer(this);
+		}
+	}
+
+	public void removeFile(File file) {
+		if (files.contains(files)) {
+			files.remove(file);
+			file.removeServer(this);
+		}
+	}
 
 	@Override
 	public String toString() {

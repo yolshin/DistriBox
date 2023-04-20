@@ -9,6 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@PropertySource("classpath:application.properties")
 class FDSTests {
 
 	@Autowired
@@ -36,7 +41,6 @@ class FDSTests {
 	public void setupDB() {
 		Server s1 = new Server();
 		serversRepository.save(s1);
-
 		users = new ArrayList<>();
 		users.add(new User("benE"));
 		users.add(new User("mberk"));
@@ -47,13 +51,15 @@ class FDSTests {
 
 		List<Integer> servers = Arrays.asList(0, 1, 2);
 		files = new ArrayList<>();
-		files.add(new File("benFile", s1, "benE"));
-		files.add(new File("file1", s1, "mberk"));
-		files.add(new File("bernerFile", s1, "yberner"));
-		files.add(new File("olFile", s1, "yolshin"));
+		files.add(new File("benFile", "benE"));
+		files.add(new File("file1", "mberk"));
+		files.add(new File("bernerFile", "yberner"));
+		files.add(new File("olFile", "yolshin"));
+		files.forEach(filesRepository::save);
+		files.forEach(f -> f.addServer(s1));
 
 		files.forEach(filesRepository::save);
-
+		serversRepository.save(s1);
 	}
 
 	@Test
@@ -68,25 +74,24 @@ class FDSTests {
 		for (User u : actualUsers) {
 			assertEquals(u.files.size(), 1);
 		}
+		Server s1 = servers.get(0);
 		for (int i = 0; i < actualFiles.size(); i++) {
 			File f = actualFiles.get(i);
 			assertEquals(f.user, actualUsers.get(i));
-			assertEquals(f.server, servers.get(0));
+			assertTrue(f.servers.contains(s1));
 		}
-
-		List<File> serverFiles = servers.get(0).getFiles();
-		serverFiles.sort(Comparator.comparing(f -> f.filepath));
-		actualFiles.sort(Comparator.comparing(f -> f.filepath));
-		assertArrayEquals(actualFiles.toArray(), serverFiles.toArray());
-
+		actualFiles.forEach(f -> f.servers.remove(s1));
+		for (File f: actualFiles) {
+			assertEquals(f.servers.size(), 0);
+		}
 
 	}
 
 	@AfterAll
 	public void cleanup() {
+		serversRepository.deleteAll();
 		filesRepository.deleteAll();
 		usersRepository.deleteAll();
-		serversRepository.deleteAll();
 	}
 
 }

@@ -1,9 +1,8 @@
 package com.distribox.fds.entities;
 
 import jakarta.persistence.*;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+
+import java.util.*;
 
 @Entity
 @Table(name="files")
@@ -18,9 +17,8 @@ public class File {
     public UUID fileid;
     public String filepath;
 
-    public File (String filepath, Server server, String userid) {
+    public File (String filepath, String userid) {
         this.filepath = filepath;
-        this.server = server;
         this.user = new User(userid);
     }
 
@@ -28,17 +26,30 @@ public class File {
 
     }
 
+
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "files")
+    public Set<Server> servers = new HashSet<>();
+
     @ManyToOne
     @JoinColumn(name="userid")
     public User user;
 
-    @ManyToOne
-    @JoinColumn(name="id")
-    public Server server;
-
     @Override
     public String toString() {
         return "File [" + fileid + ", " + filepath + ", " + user.userid + "]";
+    }
+
+    public void addServer(Server server) {
+        if (servers.add(server)) {
+            server.addFile(this);
+        }
+    }
+
+    public void removeServer(Server server) {
+        if (servers.contains(server)) {
+            servers.remove(server);
+            server.removeFile(this);
+        }
     }
 
     @Override

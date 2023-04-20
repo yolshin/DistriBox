@@ -30,7 +30,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [" + userid + " files: " + files.toString() + "]";
+		return "User [" + userid + "]";
 	}
 
 	@Override
