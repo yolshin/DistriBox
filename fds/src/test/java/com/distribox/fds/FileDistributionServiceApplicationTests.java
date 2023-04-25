@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PropertySource("classpath:application.properties")
-class FDSTests {
+class FileDistributionServiceApplicationTests {
 
 	@Autowired
 	FilesRepository filesRepository;

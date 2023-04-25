@@ -30,6 +30,7 @@ public class Server {
 			inverseJoinColumns = @JoinColumn(name = "file_id")
 	)
 	public Set<File> files = new HashSet<>();
+	public String url;
 
 	public void addFile(File file) {
 		if (files.add(file)) {

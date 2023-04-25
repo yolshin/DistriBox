@@ -1,0 +1,25 @@
+services:
+    postgresdb:
+        image: postgres:15.2-alpine
+        restart: always
+        ports: 
+            - 3000:5432
+        environment:
+            POSTGRES_PASSWORD: example
+    fds:
+        image: maven:3.9.1-eclipse-temurin-17
+        working_dir: /fds
+        volumes:
+            - ./:/fds
+        ports: 
+            - 8080:8080
+        command: mvn spring-boot:run
+        depends_on:
+            - postgresdb
+            
+# DB administration
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+          - 8081:8080
