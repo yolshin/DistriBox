@@ -26,9 +26,9 @@ public class SaveController {
 		// get list of file servers to send to
 		// send file to each file server
 		// return success message
-		ArrayList<String> serverList = fdService.getServerList();
-		fsService.sendFile(serverList, file);
-		return "File saved!";
+		ArrayList<String> serverList = fdService.getNewServerList(file);
+		String ack = fsService.saveFile(serverList, file);
+		return ack;
 	}
 
 }
