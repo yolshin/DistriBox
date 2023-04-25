@@ -10,6 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.distribox.aps.Services.FDService;
 import com.distribox.aps.Services.FSService;
 
+/**
+ * Controller for Delete requests
+ * @author @yoberner
+ *
+ */
+
 @RestController
 public class DeleteController {
 
@@ -26,7 +32,7 @@ public class DeleteController {
 		// return success message
 		ArrayList<String> serverList = fdService.getServerList(fileName);
 		String ack = fsService.deleteFile(serverList, fileName);
-		return ack;
+		return ack + "and Removed!";
 	}
 
 }
