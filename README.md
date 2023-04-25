@@ -10,3 +10,9 @@ Project Proposal Document:
 https://docs.google.com/document/d/1V9GnJXalVGfnQvvUjFUUEp_9mmJL6oBa/edit?usp=sharing&ouid=113758416435281757589&rtpof=true&sd=true
 
 © Copyright DistriBox. All Rights Reserved.
+
+
+API Diagram:
+
+
+![1680036136504](image/README/1680036136504.png)
