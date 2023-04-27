@@ -2,12 +2,16 @@ package com.distribox.fss.services;
 
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+
 @Service
 public class RetrieveService {
 
-    public String getFile(String file) {
+    public void getFile(String file) {
         // Get file.
-        return null;
+        String fileName = ""; // TODO: Fill this in.
+        File fileOnDisk = new File("data" + File.separator + fileName);
+        //TODO: Finish this.
     }
 
 }
