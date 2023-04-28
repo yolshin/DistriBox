@@ -5,9 +5,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class FDSService {
 
-    public String sendAck() {
+    public void sendAck() {
         // Send ACK through HTTP to FDS.
-        return "ACK sent";
     }
 
 }
