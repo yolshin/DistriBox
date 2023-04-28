@@ -15,7 +15,8 @@ public class GetController {
     @GetMapping("/get")
     public String get(@RequestBody String file) {
         // Retrieve file.
-        retrieveService.getFile(file);
+        String fileContents = retrieveService.getFile(file);
+        // TODO: Return fileContents in ResponseBody.
         return null;
     }
 
