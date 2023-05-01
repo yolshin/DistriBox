@@ -13,7 +13,7 @@ import java.util.*;
 public class Server {
 
 	public enum State {
-		WAITING, BUSY, OFFLINE
+		OPEN, BUSY, OFFLINE
 	}
 
 	@Id
@@ -21,7 +21,7 @@ public class Server {
 	@Column(name = "id", nullable = false)
 	private UUID id;
 
-	public State state = State.WAITING;
+	public State state = State.OPEN;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -39,7 +39,7 @@ public class Server {
 	}
 
 	public void removeFile(File file) {
-		if (files.contains(files)) {
+		if (files.contains(file)) {
 			files.remove(file);
 			file.removeServer(this);
 		}
