@@ -22,4 +22,12 @@ public class FileDistributionServiceApplication {
 			-  Sends an ID, path, user, servers
 			-  Send ACK back
 	*/
+
+	/*
+	API DOC:
+		/servers: get list of servers from DB
+		Parameters:
+			- fileid : Only include servers with the given fileid
+			- state: Only include servers with the given state
+	 */
 }

@@ -1,11 +1,17 @@
 package com.distribox.fds.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.util.*;
 
 @Entity
 @Table(name="files")
+//Prevents recursive reference with server
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "fileid")
 public class File {
     @Id
     @SequenceGenerator(
@@ -18,8 +24,12 @@ public class File {
     public String filepath;
 
     public File (String filepath, String userid) {
+        this(filepath, new User(userid));
+    }
+
+    public File(String filepath, User user) {
         this.filepath = filepath;
-        this.user = new User(userid);
+        this.user = user;
     }
 
     public File() {
@@ -45,10 +55,22 @@ public class File {
         }
     }
 
+    public void addServers(Set<Server> servers) {
+        for (Server server: servers) {
+            addServer(server);
+        }
+    }
+
     public void removeServer(Server server) {
         if (servers.contains(server)) {
             servers.remove(server);
             server.removeFile(this);
+        }
+    }
+
+    public void removeServers(Set<Server> servers) {
+        for (Server server: servers) {
+            removeServer(server);
         }
     }
 
