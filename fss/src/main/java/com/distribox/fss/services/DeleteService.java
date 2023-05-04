@@ -9,8 +9,8 @@ public class DeleteService {
 
     public boolean deleteFile(String file) {
         // Delete file.
-        String username = ""; // Will be needed since empty directories cannot be deleted at this point. // TODO: Fill the empty string in with username!
-        String path = ""; // includes username (first part) // TODO: Fill this in!
+        String username = "user"; // Will be needed since empty directories cannot be deleted at this point. // TODO: Fill the empty string in with username!
+        String path = "user" + File.separator + "folder" + File.separator + "file"; // includes username (first part) // TODO: Fill this in!
         // Save to disk.
         File filePath = new File("data" + File.separator + path);
         if (filePath.exists()) {
