@@ -9,7 +9,7 @@ public class RetrieveService {
 
     public String getFile(String file) {
         // Get file.
-        String fileName = ""; // This includes the full path. // TODO: Fill this in.
+        String fileName = "user" + File.separator + "folder" + File.separator + "file"; // This includes the full path. // TODO: Fill this in.
         File fileOnDisk = new File("data" + File.separator + fileName);
         StringBuilder fileContents = new StringBuilder();
         try (BufferedReader fileReader = new BufferedReader(new FileReader(fileOnDisk))) {
