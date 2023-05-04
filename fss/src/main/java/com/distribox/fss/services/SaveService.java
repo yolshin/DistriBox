@@ -13,19 +13,23 @@ public class SaveService {
     public void saveFile(String file) {
         // Parse file.
 
-        String username = ""; // TODO: Fill this in!
-        String filePath = ""; // includes username (first part) // TODO: Fill this in!
-        String fileName = ""; // Name of file without path. // TODO: Fill this in!
-        String fileContents = ""; // TODO: Fill this in!
+        String username = "user"; // TODO: Fill this in!
+        String filePath = "user" + File.separator + "folder"; // includes username (first part) // TODO: Fill this in!
+        String fileName = "file"; // Name of file without path. // TODO: Fill this in!
+        String fileContents = "file contents"; // TODO: Fill this in!
 
+        System.out.println(fileName);
+        System.out.println(username);
         if (fileName.equals(username) || fileName.equals("data")) {
             throw new RuntimeException("Illegal file name: " + fileName);
         }
 
+        String dirPath = System.getProperty("user.dir");
+
         // Save to disk.
-        File dirPath = new File("data" + File.separator + filePath);
-        dirPath.mkdirs();
-        File fileWithPath = new File(dirPath.getPath() + File.separator + fileName);
+        File dirPath1 = new File(dirPath + File.separator + "data" + File.separator + filePath);
+        dirPath1.mkdirs();
+        File fileWithPath = new File(dirPath1.getPath() + File.separator + fileName);
         try {
             fileWithPath.createNewFile();
         } catch (IOException ignored) {

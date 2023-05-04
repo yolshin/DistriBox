@@ -17,7 +17,7 @@ public class GetController {
         // Retrieve file.
         String fileContents = retrieveService.getFile(file);
         // TODO: Return fileContents in ResponseBody.
-        return null;
+        return fileContents;
     }
 
 }

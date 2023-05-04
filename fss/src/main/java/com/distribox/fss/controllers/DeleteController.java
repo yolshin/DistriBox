@@ -13,10 +13,11 @@ public class DeleteController {
     DeleteService deleteService;
 
     @DeleteMapping("/delete")
-    public void delete(@RequestBody String file) {
+    public boolean delete(@RequestBody String file) {
         // Delete file.
-        deleteService.deleteFile(file);
+        return deleteService.deleteFile(file);
         // Send ACK to FDS (?).
+        // TODO: Return response body!
     }
 
 }
