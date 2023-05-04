@@ -9,6 +9,7 @@ import org.apache.coyote.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,16 +30,17 @@ public class ServersController {
 	private FilesRepository filesRepository;
 
 	public List<Server> getServers(String fileid, Server.State state) {
+		Sort sort = Sort.by("lastSeen").descending();
 		if (fileid == null) {
 			if (state == null) {
-				return serversRepository.findAll();
+				return serversRepository.findAll(sort);
 			}
-			return serversRepository.findByState(state);
+			return serversRepository.findByState(state, sort);
 		}
 		if (state == null) {
-			return serversRepository.findByFiles_fileid(UUID.fromString(fileid));
+			return serversRepository.findByFiles_fileid(UUID.fromString(fileid), sort);
 		}
-		return serversRepository.findByStateAndFiles_fileid(state, UUID.fromString(fileid));
+		return serversRepository.findByStateAndFiles_fileid(state, UUID.fromString(fileid), sort);
 	}
 
 	@GetMapping("/servers")
@@ -77,7 +79,6 @@ public class ServersController {
 		serverSet = new HashSet<>(serversRepository.saveAll(serverSet));
 		return ResponseEntity.ok("file saved");
 	}
-
 
 
 }

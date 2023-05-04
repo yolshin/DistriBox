@@ -6,6 +6,8 @@ import com.distribox.fds.entities.Server;
 import com.distribox.fds.entities.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +16,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @PropertySource("classpath:application.properties")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ServersControllerTest extends SharedTests {
+
+	private static final Logger log = LoggerFactory.getLogger(ServersControllerTest.class);
 
 	@Autowired
 	private ServersController serversController;
@@ -87,7 +92,6 @@ class ServersControllerTest extends SharedTests {
 				restTemplate.getForEntity("http://localhost:" + port + "/servers?fileid=" + mFile1.fileid.toString(),
 						List.class);
 		List<HashMap<String, Object>> list = response.getBody();
-		int port = 8000;
 		System.out.println(response);
 		Set<String> serverIds = mFile1.getServers().stream().map(s -> s.getId().toString()).collect(Collectors.toSet());
 		Set<String> fetchedIds = list.stream().map(m -> (String) m.get("id")).collect(Collectors.toSet());
@@ -106,6 +110,35 @@ class ServersControllerTest extends SharedTests {
 		User u = usersRepository.findByUserid("sftUser");
 		Set<String> filepaths = u.files.stream().map(f -> f.filepath).collect(Collectors.toSet());
 		assertTrue(filepaths.contains(filepath));
+	}
+
+	@Test
+	public void lastSeenTest() throws InterruptedException {
+		TimeUnit.SECONDS.sleep(1);
+		List<Server> serverList = new ArrayList<>(servers);
+		Server s2 = new Server();
+		TimeUnit.SECONDS.sleep(1);
+		Server s3 = new Server();
+		serverList.add(s2);
+		serverList.add(s3);
+
+		serverList = saveServers(serverList);
+
+
+		log.info("s1: " + s1.toString());
+		log.info("s2: " + s2.toString());
+		log.info("s3:" + s3.toString());
+
+		serverList = serversRepository.findAll();
+		serverList.sort(Comparator.comparing(Server::getLastSeen).reversed());
+		ResponseEntity<List> response =
+				restTemplate.getForEntity("http://localhost:" + port + "/servers",
+						List.class);
+		List<HashMap<String, Object>> list = response.getBody();
+		List<String> actualIds = list.stream().map(m -> (String) m.get("id")).toList();
+		List<String> expectedIds = serverList.stream().map(s -> s.getId().toString()).toList();
+		assertEquals(expectedIds, actualIds);
+		System.out.println("hey");
 	}
 
 

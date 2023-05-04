@@ -1,5 +1,6 @@
 package com.distribox.fds;
 
+import com.distribox.fds.controllers.ServersController;
 import com.distribox.fds.entities.File;
 import com.distribox.fds.entities.Server;
 import com.distribox.fds.entities.User;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +27,8 @@ import java.util.*;
 @PropertySource("classpath:application.properties")
 public class SharedTests {
 
+	private static final Logger log = LoggerFactory.getLogger(SharedTests.class);
+
 	@Autowired
 	public ServersRepository serversRepository;
 
@@ -33,14 +38,16 @@ public class SharedTests {
 	public UsersRepository usersRepository;
 
 	public Set<Server> servers = new HashSet<>();
+	public Server s1;
 
 //	@Autowired
 //	public TestRestTemplate restTemplate;
 
 	@BeforeAll
 	public void setupDB() {
-		Server s1 = new Server();
-		serversRepository.save(s1);
+		this.s1 = new Server();
+		s1 = serversRepository.save(s1);
+		log.info("S1: " + s1.toString());
 		users = new ArrayList<>();
 		users.add(new User("benE"));
 		users.add(new User("mberk"));
@@ -59,7 +66,7 @@ public class SharedTests {
 
 		files.forEach(filesRepository::save);
 		servers.add(s1);
-		serversRepository.save(s1);
+		s1 = serversRepository.save(s1);
 	}
 
 	public List<File> files;

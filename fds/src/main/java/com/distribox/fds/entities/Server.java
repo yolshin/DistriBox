@@ -31,7 +31,6 @@ public class Server {
 
 	public Server() {
 //		lastSeen = System.currentTimeMillis();
-//		this.files = new HashSet<>();
 	}
 
 
@@ -69,7 +68,14 @@ public class Server {
 
 
 	public String url;
-	public Long lastSeen;
+	private Long lastSeen = System.currentTimeMillis();
+
+	Long updateLastSeen() {
+		lastSeen = System.currentTimeMillis();
+		return lastSeen;
+	}
+
+
 
 	public void addFile(File file) {
 		if (!files.contains(file)) {
@@ -87,7 +93,12 @@ public class Server {
 
 	@Override
 	public String toString() {
-		return id.toString();
+		return "Server{" +
+				"id=" + id +
+				", state=" + state +
+				", url='" + url + '\'' +
+				", lastSeen=" + lastSeen +
+				'}';
 	}
 
 	@Override
