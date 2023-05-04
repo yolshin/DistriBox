@@ -43,15 +43,17 @@ class ServersControllerTest extends SharedTests {
 
 	@Test
 	public void serverListTest() {
-		List<HashMap<String, String>> s = restTemplate.getForObject("http://localhost:" + port + "/servers",
+		ResponseEntity<List> response = restTemplate.getForEntity("http://localhost:" + port +
+						"/servers",
 				List.class);
-		for (HashMap map: s) {
-			String id = (String) map.get("id");
-		}
+		List<HashMap<String, Object>> responseList = (List<HashMap<String, Object>>) response.getBody();
+		List<Server> serverList = serverList();
+		serverList.sort(Comparator.comparing(Server::getLastSeen).reversed());
+		List<String> expectedServerIds = serverList.stream().map(s -> s.getId().toString()).toList();
+		List<String> actualServerIds = responseList.stream().map(m -> (String) m.get("id")).toList();
+		assertArrayEquals(expectedServerIds.toArray(), actualServerIds.toArray());
 	}
 
-
-//	@Transactional
 	public List<File> serverListFilesTransaction() {
 		User mberk = usersRepository.getReferenceById("mberk");
 		File mFile1 = new File("stuff/file1.txt", mberk);
@@ -59,10 +61,10 @@ class ServersControllerTest extends SharedTests {
 		List<File> files = Arrays.asList(mFile1, mFile2);
 		Server s2 = new Server();
 		saveServers(List.of(s2));
-		servers.add(s2);
-
+		List<Server> serverList = serverList();
+		serverList.add(s2);
 		files = saveFiles(files);
-		List<Server> serverList = servers.stream().toList();
+		serverList = serverList();
 		Server s1 = serverList.get(0);
 		s1.addFile(mFile1);
 		s2.addFile(mFile2);
@@ -104,18 +106,20 @@ class ServersControllerTest extends SharedTests {
 		String filepath = "/saveFileTest/file1.txt";
 		body.put("filepath", filepath);
 		body.put("userid", "sftUser");
-		List<String> serverids = servers.stream().map(s -> s.getId().toString()).toList();
+		List<String> serverids = serverList().stream().map(s -> s.getId().toString()).toList();
 		body.put("serverids", serverids);
 		String response = restTemplate.postForObject("http://localhost:" + port + "/saveFile", body, String.class);
 		User u = usersRepository.findByUserid("sftUser");
 		Set<String> filepaths = u.files.stream().map(f -> f.filepath).collect(Collectors.toSet());
 		assertTrue(filepaths.contains(filepath));
+
 	}
 
 	@Test
 	public void lastSeenTest() throws InterruptedException {
 		TimeUnit.SECONDS.sleep(1);
-		List<Server> serverList = new ArrayList<>(servers);
+		List<Server> serverList = serversRepository.findAll();
+		Server s1 = serverList.get(0);
 		Server s2 = new Server();
 		TimeUnit.SECONDS.sleep(1);
 		Server s3 = new Server();

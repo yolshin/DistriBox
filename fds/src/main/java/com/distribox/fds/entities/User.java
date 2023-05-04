@@ -1,11 +1,13 @@
 package com.distribox.fds.entities;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name="users")
+@JsonIgnoreProperties(value = {"files"}, allowGetters = true)
 public class User {
 
 	@Id
@@ -25,6 +27,15 @@ public class User {
 	 */
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
 	public List<File> files;
+
+	@JsonIdentityInfo(
+			generator = ObjectIdGenerators.PropertyGenerator.class,
+			property = "fileid")
+	@JsonIdentityReference(alwaysAsId=true)
+	@JsonProperty("fileids")
+	public List<File> getFiles() {
+		return files;
+	}
 
 	protected User() {}
 

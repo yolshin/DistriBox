@@ -53,32 +53,5 @@ public class ServersController {
 		return response;
 	}
 
-	@PostMapping("/saveFile")
-	public ResponseEntity<String> saveFilesRequest(@RequestBody Map<String, Object> body) {
-		//TODO: How to handle nonexistant user?
-		log.info("Save!");
-		String filepath = (String) body.get("filepath");
-		String userid = (String) body.get("userid");
-		User user;
-		if (!usersRepository.existsByUseridLike(userid)) {
-			user = new User(userid);
-			usersRepository.save(user);
-		} else {
-			user = usersRepository.findByUserid(userid);
-		}
-		List<String> serverids = (List<String>) body.get("serverids");
-		Set<Server> serverSet = new HashSet<>();
-		for (String serverid : serverids) {
-			Server s = serversRepository.findById(UUID.fromString(serverid)).get();
-			serverSet.add(s);
-		}
-		File newFile = new File(filepath, user);
-		newFile = filesRepository.save(newFile);
-		newFile.addServers(serverSet);
-		newFile = filesRepository.save(newFile);
-		serverSet = new HashSet<>(serversRepository.saveAll(serverSet));
-		return ResponseEntity.ok("file saved");
-	}
-
 
 }

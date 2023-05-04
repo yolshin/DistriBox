@@ -37,15 +37,14 @@ public class SharedTests {
 	@Autowired
 	public UsersRepository usersRepository;
 
-	public Set<Server> servers = new HashSet<>();
-	public Server s1;
-
 //	@Autowired
 //	public TestRestTemplate restTemplate;
 
 	@BeforeAll
 	public void setupDB() {
-		this.s1 = new Server();
+		List<File> files;
+		List<User> users;
+		Server s1 = new Server();
 		s1 = serversRepository.save(s1);
 		log.info("S1: " + s1.toString());
 		users = new ArrayList<>();
@@ -62,15 +61,18 @@ public class SharedTests {
 		files.add(new File("bernerFile", "yberner"));
 		files.add(new File("olFile", "yolshin"));
 		files.forEach(filesRepository::save);
-//		files.forEach(f -> f.addServer(s1));
+		final Server fs1 = s1;
+		files.forEach(f -> f.addServer(fs1));
 
 		files.forEach(filesRepository::save);
-		servers.add(s1);
-		s1 = serversRepository.save(s1);
+		serversRepository.save(fs1);
 	}
 
-	public List<File> files;
-	public List<User> users;
+	public List<Server> serverList() {
+		return serversRepository.findAll();
+	}
+
+
 
 	@AfterAll
 	public void cleanup() {

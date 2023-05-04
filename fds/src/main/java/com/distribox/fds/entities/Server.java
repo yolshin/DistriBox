@@ -1,9 +1,6 @@
 package com.distribox.fds.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,9 +21,7 @@ import java.util.*;
 @Entity
 @Table(name = "servers")
 //Prevents recursive reference with file
-@JsonIdentityInfo(
-		generator = ObjectIdGenerators.PropertyGenerator.class,
-		property = "id")
+@JsonIgnoreProperties(value = {"files"},allowGetters = true)
 public class Server {
 
 	public Server() {
@@ -46,7 +41,7 @@ public class Server {
 //			allocationSize = 1
 //	)
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "serverid", nullable = false)
+	@Column(name = "id", nullable = false)
 	private UUID id;
 
 	public void setId(UUID id) {
@@ -60,11 +55,20 @@ public class Server {
 
 	public State state = State.OPEN;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="s_f",
-			joinColumns = {@JoinColumn(name="serverid", referencedColumnName = "serverid")},
+			joinColumns = {@JoinColumn(name="id", referencedColumnName = "id")},
 			inverseJoinColumns = {@JoinColumn(name="fileid", referencedColumnName = "fileid")})
 	private Set<File> files = new HashSet<>();
+
+	@JsonIdentityInfo(
+			generator = ObjectIdGenerators.PropertyGenerator.class,
+			property = "fileid")
+	@JsonIdentityReference(alwaysAsId=true)
+	@JsonProperty("fileids")
+	public Set<File> getFiles() {
+		return files;
+	}
 
 
 	public String url;

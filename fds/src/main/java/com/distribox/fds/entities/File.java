@@ -1,7 +1,6 @@
 package com.distribox.fds.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,9 +12,7 @@ import java.util.*;
 @Entity
 @Table(name = "files")
 //Prevents recursive reference with server
-@JsonIdentityInfo(
-		generator = ObjectIdGenerators.PropertyGenerator.class,
-		property = "fileid")
+@JsonIgnoreProperties(value = {"servers", "userid"},allowGetters = true)
 public class File {
 
 	@SequenceGenerator(
@@ -44,7 +41,7 @@ public class File {
 	}
 
 
-	@ManyToMany(mappedBy = "files")
+	@ManyToMany(mappedBy = "files", fetch = FetchType.EAGER)
 	private Set<Server> servers = new HashSet<>();
 
 
@@ -59,6 +56,15 @@ public class File {
 	@ManyToOne
 	@JoinColumn(name = "userid")
 	public User user;
+
+	@JsonIdentityInfo(
+			generator = ObjectIdGenerators.PropertyGenerator.class,
+			property = "userid")
+	@JsonIdentityReference(alwaysAsId=true)
+	@JsonProperty("userid")
+	public User getUser() {
+		return user;
+	}
 
 	@Override
 	public String toString() {
