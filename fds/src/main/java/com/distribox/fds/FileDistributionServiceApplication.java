@@ -21,6 +21,10 @@ public class FileDistributionServiceApplication {
 		-  POST file-saved
 			-  Sends an ID, path, user, servers
 			-  Send ACK back
+		Heartbeat api:
+			- server id
+			- time
+			-
 	*/
 
 	/*
@@ -29,5 +33,8 @@ public class FileDistributionServiceApplication {
 		Parameters:
 			- fileid : Only include servers with the given fileid
 			- state: Only include servers with the given state
+	 */
+	/*
+
 	 */
 }
