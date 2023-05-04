@@ -1,45 +1,91 @@
 package com.distribox.fds.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.SQLUpdate;
 
 import java.util.*;
+
+//todo: add last-seen
+//"busy"" if more than 10 seconds since thing
+//can represnt with query - if lower than
+
 
 @Getter
 @Setter
 @Entity
-@Table(name = "server")
+@Table(name = "servers")
+//Prevents recursive reference with file
+@JsonIdentityInfo(
+		generator = ObjectIdGenerators.PropertyGenerator.class,
+		property = "id")
 public class Server {
 
-	public enum State {
-		WAITING, BUSY, OFFLINE
+	public Server() {
+//		lastSeen = System.currentTimeMillis();
 	}
 
+
+	public enum State {
+		OPEN, BUSY, OFFLINE
+	}
+
+
 	@Id
+//	@SequenceGenerator(
+//			name = "server_sequence",
+//			sequenceName = "server_sequence",
+//			allocationSize = 1
+//	)
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id", nullable = false)
+	@Column(name = "serverid", nullable = false)
 	private UUID id;
 
-	public State state = State.WAITING;
+	public void setId(UUID id) {
+		this.id = id;
+	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(
-			name = "server_files",
-			joinColumns = @JoinColumn(name = "server_id"),
-			inverseJoinColumns = @JoinColumn(name = "file_id")
-	)
-	public Set<File> files = new HashSet<>();
+
+	public UUID getId() {
+		return id;
+	}
+
+	public State state = State.OPEN;
+
+	@ManyToMany
+	@JoinTable(name="s_f",
+			joinColumns = {@JoinColumn(name="serverid", referencedColumnName = "serverid")},
+			inverseJoinColumns = {@JoinColumn(name="fileid", referencedColumnName = "fileid")})
+	private Set<File> files = new HashSet<>();
+
+
 	public String url;
+	private Long lastSeen = System.currentTimeMillis();
+
+	Long updateLastSeen() {
+		lastSeen = System.currentTimeMillis();
+		return lastSeen;
+	}
+
+
 
 	public void addFile(File file) {
-		if (files.add(file)) {
+		if (!files.contains(file)) {
+			files.add(file);
 			file.addServer(this);
 		}
 	}
 
 	public void removeFile(File file) {
-		if (files.contains(files)) {
+		if (files.contains(file)) {
 			files.remove(file);
 			file.removeServer(this);
 		}
@@ -47,7 +93,12 @@ public class Server {
 
 	@Override
 	public String toString() {
-		return id.toString();
+		return "Server{" +
+				"id=" + id +
+				", state=" + state +
+				", url='" + url + '\'' +
+				", lastSeen=" + lastSeen +
+				'}';
 	}
 
 	@Override
@@ -57,11 +108,11 @@ public class Server {
 
 		Server server = (Server) o;
 
-		return Objects.equals(id, server.id);
+		return id.equals(server.id);
 	}
 
 	@Override
 	public int hashCode() {
-		return id != null ? id.hashCode() : 0;
+		return id.hashCode();
 	}
 }

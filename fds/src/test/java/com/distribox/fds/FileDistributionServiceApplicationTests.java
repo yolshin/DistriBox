@@ -2,65 +2,32 @@ package com.distribox.fds;
 
 import com.distribox.fds.entities.*;
 //import com.distribox.fds.services.*;
-import com.distribox.fds.repos.*;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import com.distribox.fds.repos.FilesRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.ContextHierarchy;
-import org.springframework.test.context.TestPropertySource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PropertySource("classpath:application.properties")
-class FileDistributionServiceApplicationTests {
+//@SpringBootTest(classes = FilesRepository.class)
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@PropertySource("classpath:application.properties")
+//@ExtendWith(SpringExtension.class)
+//@ContextHierarchy({
+//		@ContextConfiguration(classes = SharedTests.class)
+//})
 
+class Thing2 {
 	@Autowired
 	FilesRepository filesRepository;
-	@Autowired
-	UsersRepository usersRepository;
+}
 
-	@Autowired
-	ServersRepository serversRepository;
-
-	List<File> files;
-	List<User> users;
-
-	@BeforeAll
-	public void setupDB() {
-		Server s1 = new Server();
-		serversRepository.save(s1);
-		users = new ArrayList<>();
-		users.add(new User("benE"));
-		users.add(new User("mberk"));
-		users.add(new User("yberner"));
-		users.add(new User("yolshin"));
-
-		users.forEach(usersRepository::save);
-
-		List<Integer> servers = Arrays.asList(0, 1, 2);
-		files = new ArrayList<>();
-		files.add(new File("benFile", "benE"));
-		files.add(new File("file1", "mberk"));
-		files.add(new File("bernerFile", "yberner"));
-		files.add(new File("olFile", "yolshin"));
-		files.forEach(filesRepository::save);
-		files.forEach(f -> f.addServer(s1));
-
-		files.forEach(filesRepository::save);
-		serversRepository.save(s1);
-	}
+@SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class FileDistributionServiceApplicationTests extends SharedTests {
 
 	@Test
 	public void basicTest() {
@@ -78,20 +45,11 @@ class FileDistributionServiceApplicationTests {
 		for (int i = 0; i < actualFiles.size(); i++) {
 			File f = actualFiles.get(i);
 			assertEquals(f.user, actualUsers.get(i));
-			assertTrue(f.servers.contains(s1));
+			assertTrue(f.getServers().contains(s1));
 		}
-		actualFiles.forEach(f -> f.servers.remove(s1));
-		for (File f: actualFiles) {
-			assertEquals(f.servers.size(), 0);
+		actualFiles.forEach(f -> f.getServers().remove(s1));
+		for (File f : actualFiles) {
+			assertEquals(f.getServers().size(), 0);
 		}
-
 	}
-
-	@AfterAll
-	public void cleanup() {
-		serversRepository.deleteAll();
-		filesRepository.deleteAll();
-		usersRepository.deleteAll();
-	}
-
 }
