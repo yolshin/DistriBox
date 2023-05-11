@@ -1,0 +1,27 @@
+version: '3.1'
+
+services:
+
+  app1:
+    build: .
+    environment:
+      - zookeeper.connectionString=zoo1:2181,zoo2:2181,zoo3:2181
+      - server.port=8081
+    ports:
+      - "8081:8081"
+
+  app2:
+    build: .
+    environment:
+      - zookeeper.connectionString=zoo1:2181,zoo2:2181,zoo3:2181
+      - server.port=8082
+    ports:
+      - "8082:8082"
+
+  app3:
+    build: .
+    environment:
+      - zookeeper.connectionString=zoo1:2181,zoo2:2181,zoo3:2181
+      - server.port=8083
+    ports:
+      - "8083:8083"
