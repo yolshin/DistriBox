@@ -25,7 +25,6 @@ import java.util.*;
 public class Server {
 
 	public Server() {
-//		lastSeen = System.currentTimeMillis();
 	}
 
 
@@ -35,11 +34,6 @@ public class Server {
 
 
 	@Id
-//	@SequenceGenerator(
-//			name = "server_sequence",
-//			sequenceName = "server_sequence",
-//			allocationSize = 1
-//	)
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id", nullable = false)
 	private UUID id;

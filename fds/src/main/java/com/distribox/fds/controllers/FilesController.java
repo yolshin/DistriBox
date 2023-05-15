@@ -6,6 +6,7 @@ import com.distribox.fds.entities.User;
 import com.distribox.fds.repos.FilesRepository;
 import com.distribox.fds.repos.ServersRepository;
 import com.distribox.fds.repos.UsersRepository;
+import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class FilesController {
 	private static final Logger log = LoggerFactory.getLogger(FilesController.class);
 
 	@PostMapping("/saveFile")
-	public ResponseEntity<String> saveFilesRequest(@RequestBody Map<String, Object> body) {
+	public File saveFilesRequest(@RequestBody Map<String, Object> body) {
 		//TODO: How to handle nonexistant user?
 		log.info("Save!");
 		String filepath = (String) body.get("filepath");
@@ -53,7 +54,23 @@ public class FilesController {
 		newFile.addServers(serverSet);
 		newFile = filesRepository.save(newFile);
 		serverSet = new HashSet<>(serversRepository.saveAll(serverSet));
-		return ResponseEntity.ok("file saved");
+		return newFile;
+	}
+
+	@PostMapping("/deleteFile")
+	public File deleteFilesReuqest(String fileid) {
+		UUID fileUUID = UUID.fromString(fileid);
+		File file = filesRepository.getReferenceById(fileUUID);
+		filesRepository.delete(file);
+		//TODO: Test that it's also gone from owning servers
+		return file;
+	}
+
+	///Endpoint for ack
+	@PostMapping("/savedFile")
+	public ResponseEntity<String> saveAck(String fileid) {
+		//todo: make some kind of queue for files waiting to be saved
+		return ResponseEntity.ok("OK");
 	}
 
 }

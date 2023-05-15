@@ -49,8 +49,20 @@ public class ServersController {
 	                                      @RequestParam(required = false) Server.State state) {
 		List<Server> servers = getServers(fileid, state);
 		ResponseEntity<List<Server>> response = ResponseEntity.ok(servers);
-		log.info("HEY!!!!!");
 		return response;
+	}
+
+	@PostMapping("/heartbeat")
+	public ResponseEntity<String> postHeartbeat(@RequestBody Map<String, String> body) {
+		//TODO: Add test for heartbeat
+		String serverIdString = body.get("server");
+		String servertime = body.get("time");
+		UUID serverId = UUID.fromString(serverIdString);
+		Long lastUsedTime = Long.parseLong(servertime);
+		Server server = serversRepository.getReferenceById(serverId);
+		server.setLastSeen(lastUsedTime);
+		serversRepository.save(server);
+		return ResponseEntity.ok("OK");
 	}
 
 
