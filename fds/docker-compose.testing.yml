@@ -13,11 +13,14 @@ services:
       - ./:/fds
     ports:
       - 8080:8080
-    command: mvn spring-boot:run
+    command: ["--spring.datasource.url=jdbc:postgresql://postgres:5432/example", "mvn spring-boot:run"]
     depends_on:
       - postgresdb
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/postgres
+      SERVER_PORT: 8080
+      ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
+
 
   # DB administration
   adminer:

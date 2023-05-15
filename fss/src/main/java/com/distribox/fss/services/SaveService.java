@@ -1,5 +1,6 @@
 package com.distribox.fss.services;
 
+import com.distribox.fss.RequestDto;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
@@ -10,13 +11,13 @@ import java.io.IOException;
 @Service
 public class SaveService {
 
-    public void saveFile(String file) {
+    public void saveFile(RequestDto file) {
         // Parse file.
 
-        String username = "user"; // TODO: Fill this in!
-        String filePath = "user" + File.separator + "folder"; // includes username (first part) // TODO: Fill this in!
-        String fileName = "file"; // Name of file without path. // TODO: Fill this in!
-        String fileContents = "file contents"; // TODO: Fill this in!
+        String username = file.getUserId(); // TODO: Fill this in!
+        String filePath = username + File.separator + file.getFilePath(); // includes username (first part) // TODO: Fill this in!
+        String fileName = file.getFileName(); // Name of file without path. // TODO: Fill this in!
+        String fileContents = file.getFileContents(); // TODO: Fill this in!
 
         System.out.println(fileName);
         System.out.println(username);
@@ -28,14 +29,15 @@ public class SaveService {
 
         // Save to disk.
         File dirPath1 = new File(dirPath + File.separator + "data" + File.separator + filePath);
-        dirPath1.mkdirs();
+        boolean dirsMade = dirPath1.mkdirs();
         File fileWithPath = new File(dirPath1.getPath() + File.separator + fileName);
         try {
-            fileWithPath.createNewFile();
+            boolean fileMade = fileWithPath.createNewFile();
         } catch (IOException ignored) {
         }
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(fileWithPath, true))) {
             fileWriter.write(fileContents);
+            fileWriter.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

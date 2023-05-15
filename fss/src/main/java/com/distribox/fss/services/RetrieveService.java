@@ -1,5 +1,6 @@
 package com.distribox.fss.services;
 
+import com.distribox.fss.RequestDto;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -7,10 +8,10 @@ import java.io.*;
 @Service
 public class RetrieveService {
 
-    public String getFile(String file) {
+    public String getFile(RequestDto file) {
         // Get file.
-        String fileName = "user" + File.separator + "folder" + File.separator + "file"; // This includes the full path. // TODO: Fill this in.
-        File fileOnDisk = new File("data" + File.separator + fileName);
+        String fileName = file.getUserId() + File.separator + file.getFilePath() + File.separator + file.getFileName(); // This includes the full path. // TODO: Fill this in.
+        File fileOnDisk = new File(System.getProperty("user.dir") + File.separator + "data" + File.separator + fileName);
         StringBuilder fileContents = new StringBuilder();
         try (BufferedReader fileReader = new BufferedReader(new FileReader(fileOnDisk))) {
             boolean appendLineSeparator = false;

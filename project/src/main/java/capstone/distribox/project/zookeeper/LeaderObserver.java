@@ -24,4 +24,8 @@ public class LeaderObserver {
         return new String(data, StandardCharsets.UTF_8);
     }
 
+//    public static void main(String[] args) {
+//        LeaderObserver observer = new LeaderObserver()
+//    }
+
 }

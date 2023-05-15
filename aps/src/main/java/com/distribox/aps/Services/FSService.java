@@ -2,7 +2,12 @@ package com.distribox.aps.Services;
 
 import java.util.*;
 
+import com.distribox.aps.RequestDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
@@ -24,16 +29,37 @@ public class FSService {
 	 * @param fileContents
 	 * @return success message
 	 */
-	public String saveFile(List<String> servers, String fileName, String fileContents) {
+	public String saveFile(List<String> servers, RequestDto file) {
 		// send file to server
 		// return success message
 		for (String server : servers) {
+			ObjectMapper objectMapper = new ObjectMapper();
+			String requestBodyJson = null;
+			try {
+				requestBodyJson = objectMapper.writeValueAsString(file);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException(e);
+			}
 			// send file to server
 			WebClient webClient = WebClient.create();
+			// Handle the response body
 			String ack = webClient
 					.post()
-					.uri(server + "/saveFile")
-					.retrieve().bodyToMono(String.class).block();
+					.uri(server + "/save")
+					.contentType(MediaType.APPLICATION_JSON)
+					.body(BodyInserters.fromValue(requestBodyJson))
+					.retrieve()
+					.bodyToMono(String.class)
+					.subscribe(System.out::println)
+					.toString();
+
+//			WebClient webClient = WebClient.create();
+//			webClient.post()
+//					.uri("http://example.com/api/resource")
+//					.contentType(MediaType.APPLICATION_JSON)
+//					.body(BodyInserters.fromValue(requestBodyJson))
+
+
 
 		}
 		return "File sent!";
@@ -45,16 +71,28 @@ public class FSService {
 	 * @param fileName
 	 * @return File
 	 */
-	public String getFile(List<String> servers, String fileName) {
+	public String getFile(List<String> servers, RequestDto fileName) {
 		// get file from server
 		// return file
 		for (String server : servers) {
-			// get file from server
+			ObjectMapper objectMapper = new ObjectMapper();
+			String requestBodyJson = null;
+			try {
+				requestBodyJson = objectMapper.writeValueAsString(fileName);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException(e);
+			}
+			// send file to server
 			WebClient webClient = WebClient.create();
+			// Handle the response body
 			String file = webClient
-					.get()
-					.uri(server + "/getFile")
-					.retrieve().bodyToMono(String.class).block();
+					.post()
+					.uri(server + "/get")
+					.contentType(MediaType.APPLICATION_JSON)
+					.body(BodyInserters.fromValue(requestBodyJson))
+					.retrieve()
+					.bodyToMono(String.class)
+					.block();
 			if (file != null) {
 				return file;
 			}
@@ -69,7 +107,7 @@ public class FSService {
 	 * @param fileName
 	 * @return success message
 	 */
-	public String deleteFile(List<String> servers, String fileName) {
+	public String deleteFile(List<String> servers, RequestDto fileName) {
 		// delete file from servers
 		// return success message
 		for (String server : servers) {

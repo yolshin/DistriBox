@@ -2,6 +2,7 @@ package com.distribox.aps.controllers;
 
 import java.util.*;
 
+import com.distribox.aps.RequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,11 +27,11 @@ public class DeleteController {
 	private FSService fsService;
 	
 	@DeleteMapping(value="/delete")
-	public String deleteFile(@RequestBody String fileName) {
+	public String deleteFile(@RequestBody RequestDto fileName) {
 		// get list of file servers to delete from
 		// delete file from each file server
 		// return success message
-		ArrayList<String> serverList = fdService.getServerList(fileName);
+		List<String> serverList = fdService.getServerList(fileName);
 		String ack = fsService.deleteFile(serverList, fileName);
 		return ack + "and Removed!";
 	}

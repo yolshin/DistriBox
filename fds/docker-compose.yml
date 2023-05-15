@@ -32,7 +32,10 @@ services:
         depends_on:
             - postgresdb1
         environment:
-            SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb1:5432/postgres
+#            - SPRING_DATASOURCE_URL = jdbc:postgresql://postgresdb1:5432/postgres
+            - server.port=8083
+            - zookeeper.connectionString=zoo1:2181,zoo2:2181,zoo3:2181
+#            SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb1:5432/postgres
     fds2:
         image: maven:3.9.1-eclipse-temurin-17
         working_dir: /fds
@@ -44,7 +47,9 @@ services:
         depends_on:
             - postgresdb2
         environment:
-            SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb2:5432/postgres
+#            SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb2:5432/postgres
+            - server.port=8083
+            - zookeeper.connectionString=zoo1:2181,zoo2:2181,zoo3:2181
     fds3:
         image: maven:3.9.1-eclipse-temurin-17
         working_dir: /fds
@@ -56,7 +61,10 @@ services:
         depends_on:
             - postgresdb3
         environment:
-            SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb1:5432/postgres
+#            - SPRING_DATASOURCE_URL = jdbc:postgresql://postgresdb3:5432/postgres
+#            SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb3:5432/postgres
+            - server.port=8084
+            - zookeeper.connectionString=zoo1:2181,zoo2:2181,zoo3:2181
 # DB administration
 #    adminer:
 #        image: adminer

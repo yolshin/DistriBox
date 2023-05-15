@@ -2,6 +2,7 @@ package com.distribox.aps.Services;
 
 import java.util.*;
 
+import com.distribox.aps.RequestDto;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -23,18 +24,18 @@ public class FDService {
 	 * @param fileName
 	 * @return list of new file servers
 	 */
-	public ArrayList<String> getNewServerList(String fileName) {
+	public List<String> getNewServerList(String fileName) {
 		// get list of file servers from database
 		// return list of file servers
-		String server = "http://localhost:8081/getNewServerList";
-		WebClient webClient = WebClient.create();
-		ArrayList<String> serverList = webClient
-				.get()
-				.uri(server)
-				.retrieve().bodyToMono(new ParameterizedTypeReference<ArrayList<String>>() {
-				}).block();
+//		String server = "http://localhost:8081/getNewServerList";
+//		WebClient webClient = WebClient.create();
+//		ArrayList<String> serverList = webClient
+//				.get()
+//				.uri(server)
+//				.retrieve().bodyToMono(new ParameterizedTypeReference<ArrayList<String>>() {
+//				}).block();
 
-		return serverList;
+		return List.of("http://localhost:8081");
 	}
 
 	/**
@@ -42,18 +43,18 @@ public class FDService {
 	 * @param fileName
 	 * @return list of file servers
 	 */
-	public ArrayList<String> getServerList(String fileName) {
+	public List<String> getServerList(RequestDto fileName) {
 		// get list of file servers from database
 		// return list of file servers
-		String server = "http://localhost:8081/getServerList";
-		WebClient webClient = WebClient.create();
-		ArrayList<String> serverList = webClient
-				.get()
-				.uri(server)
-				.retrieve().bodyToMono(new ParameterizedTypeReference<ArrayList<String>>() {
-				}).block();
+//		String server = "http://localhost:8081/getServerList";
+//		WebClient webClient = WebClient.create();
+//		ArrayList<String> serverList = webClient
+//				.get()
+//				.uri(server)
+//				.retrieve().bodyToMono(new ParameterizedTypeReference<ArrayList<String>>() {
+//				}).block();
 
-		return serverList;
+		return List.of("http://localhost:8081");
 	}
 
 	/**

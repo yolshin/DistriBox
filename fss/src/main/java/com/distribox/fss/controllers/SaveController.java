@@ -1,5 +1,6 @@
 package com.distribox.fss.controllers;
 
+import com.distribox.fss.RequestDto;
 import com.distribox.fss.services.FDSService;
 import com.distribox.fss.services.SaveService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class SaveController {
     FDSService fdsService;
 
     @PostMapping("/save")
-    public void save(@RequestBody String file) throws IOException {
+    public void save(@RequestBody RequestDto file) throws IOException {
         // Save file to disk. (call SaveService)
         saveService.saveFile(file);
         // Send ACK to FDS. (fds stores metadata of file - metadata includes file name and where it is stored as well
