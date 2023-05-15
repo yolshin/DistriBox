@@ -1,25 +1,65 @@
 services:
-    postgresdb:
+    postgresdb1:
         image: postgres:15.2-alpine
         restart: always
         ports: 
             - 3000:5432
         environment:
             POSTGRES_PASSWORD: example
-    fds:
+    postgresdb2:
+        image: postgres:15.2-alpine
+        restart: always
+        ports:
+            - 3001:5432
+        environment:
+            POSTGRES_PASSWORD: example
+    postgresdb3:
+        image: postgres:15.2-alpine
+        restart: always
+        ports:
+            - 3002:5432
+        environment:
+            POSTGRES_PASSWORD: example
+
+    fds1:
         image: maven:3.9.1-eclipse-temurin-17
         working_dir: /fds
         volumes:
             - ./:/fds
         ports: 
-            - 8080:8080
+            - 8082:8080
         command: mvn spring-boot:run
         depends_on:
-            - postgresdb
-            
-# DB administration
-    adminer:
-        image: adminer
-        restart: always
+            - postgresdb1
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb1:5432/postgres
+    fds2:
+        image: maven:3.9.1-eclipse-temurin-17
+        working_dir: /fds
+        volumes:
+            - ./:/fds
         ports:
-          - 8081:8080
+            - 8083:8080
+        command: mvn spring-boot:run
+        depends_on:
+            - postgresdb2
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb2:5432/postgres
+    fds3:
+        image: maven:3.9.1-eclipse-temurin-17
+        working_dir: /fds
+        volumes:
+            - ./:/fds
+        ports:
+            - 8084:8080
+        command: mvn spring-boot:run
+        depends_on:
+            - postgresdb3
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb1:5432/postgres
+# DB administration
+#    adminer:
+#        image: adminer
+#        restart: always
+#        ports:
+#          - 8081:8080
