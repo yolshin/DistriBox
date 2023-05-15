@@ -22,16 +22,28 @@ public class File {
 	)
 //	@GeneratedValue
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "fileid", nullable = false)
 	public UUID fileid;
 	public String filepath;
 
 	public File(String filepath, String userid) {
-		this(filepath, new User(userid));
+		this(filepath, new User(userid), null);
+	}
+	public File(String filepath, String userid, UUID fileid) {
+		this(filepath, new User(userid), fileid);
 	}
 
 	public File(String filepath, User user) {
+		this(filepath, user, null);
+	}
+
+	public File(String filepath, User user, UUID fileid) {
+		if (fileid == null) {
+			this.fileid = UUID.randomUUID();
+		} else {
+			this.fileid = fileid;
+		}
+
 		this.filepath = filepath;
 		this.user = user;
 	}
@@ -49,7 +61,7 @@ public class File {
 		return servers;
 	}
 
-	public void setServers(Set<Server> servers) {
+	private void setServers(Set<Server> servers) {
 		this.servers = servers;
 	}
 

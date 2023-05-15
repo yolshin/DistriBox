@@ -45,6 +45,7 @@ public class SharedTests {
 		List<File> files;
 		List<User> users;
 		Server s1 = new Server();
+		s1.setUrl("this is arbitrary as far as the FDS is concerned");
 		s1 = serversRepository.save(s1);
 		log.info("S1: " + s1.toString());
 		users = new ArrayList<>();
