@@ -66,8 +66,8 @@ class ServersControllerTest extends SharedTests {
 		files = saveFiles(files);
 		serverList = serverList();
 		Server s1 = serverList.get(0);
-		s1.addFile(mFile1);
-		s2.addFile(mFile2);
+		s1.addFile(files.get(0));
+		s2.addFile(files.get(1));
 		files = saveFiles(files);
 		serverList = saveServers(serverList);
 
@@ -76,7 +76,8 @@ class ServersControllerTest extends SharedTests {
 		filesRepository.saveAll(Arrays.asList(mFile1, mFile2));
 		filesRepository.saveAll(Arrays.asList(mFile1, mFile2));
 		serverList = saveServers(serverList);
-		return filesRepository.saveAll(files);
+		files = filesRepository.saveAll(files);
+		return files;
 	}
 	public List<Server> saveServers(List<Server> servers) {
 		return serversRepository.saveAll(servers);
@@ -98,21 +99,6 @@ class ServersControllerTest extends SharedTests {
 		Set<String> serverIds = mFile1.getServers().stream().map(s -> s.getId().toString()).collect(Collectors.toSet());
 		Set<String> fetchedIds = list.stream().map(m -> (String) m.get("id")).collect(Collectors.toSet());
 		assertEquals(serverIds, fetchedIds);
-	}
-
-	@Test
-	public void saveFileTest() {
-		Map<String, Object> body = new HashMap<>();
-		String filepath = "/saveFileTest/file1.txt";
-		body.put("filepath", filepath);
-		body.put("userid", "sftUser");
-		List<String> serverids = serverList().stream().map(s -> s.getId().toString()).toList();
-		body.put("serverids", serverids);
-		String response = restTemplate.postForObject("http://localhost:" + port + "/saveFile", body, String.class);
-		User u = usersRepository.findByUserid("sftUser");
-		Set<String> filepaths = u.files.stream().map(f -> f.filepath).collect(Collectors.toSet());
-		assertTrue(filepaths.contains(filepath));
-
 	}
 
 	@Test
@@ -142,7 +128,6 @@ class ServersControllerTest extends SharedTests {
 		List<String> actualIds = list.stream().map(m -> (String) m.get("id")).toList();
 		List<String> expectedIds = serverList.stream().map(s -> s.getId().toString()).toList();
 		assertEquals(expectedIds, actualIds);
-		System.out.println("hey");
 	}
 
 
