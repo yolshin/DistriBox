@@ -3,9 +3,6 @@ package com.distribox.fds.zookeeper;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
-import org.apache.curator.framework.recipes.leader.LeaderSelector;
-import org.apache.curator.framework.recipes.leader.LeaderSelectorListener;
-import org.apache.curator.framework.recipes.leader.LeaderSelectorListenerAdapter;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,12 +19,12 @@ public class ZookeeperConfig {
     @Value("${zookeeper.connectionString}")
     private String connectionString;
 
-    @Value("${server.port}")
-    private String port;
+    @Value("${server.url}")
+    private String url;
 
     @Bean
     public CuratorFramework curatorFramework() throws Exception {
-        System.out.println("Zookeeper connection string: " + connectionString + " port: " + port);
+        System.out.println("Zookeeper connection string: " + connectionString + " port: " + url);
         client = CuratorFrameworkFactory.builder()
                 .connectString(connectionString)
                 .retryPolicy(new ExponentialBackoffRetry(Integer.MAX_VALUE, 3))
@@ -36,7 +33,7 @@ public class ZookeeperConfig {
 
         // Create the LeaderLatch
         //allows the FDS to participate in leader election
-        LeaderLatch leaderLatch = new LeaderLatch(client, "/my-group", port);
+        LeaderLatch leaderLatch = new LeaderLatch(client, "/my-group", url);
         leaderLatch.start();
         // Run the code in a loop
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -44,14 +41,14 @@ public class ZookeeperConfig {
         executorService.submit(() -> {
             while (true) {
                 if (!leaderLatch.hasLeadership()) {
-                    System.out.println("I am NOT the leader on port " + port);
+                    System.out.println("I am NOT the leader on port " + url);
                 } else {
-                    System.out.println("I AM the leader on port " + port + " and I do nothing YET");
+                    System.out.println("I AM the leader on port " + url + " and I do nothing YET");
                     Stat stat = client.checkExists().forPath("/leader");
                     if (stat == null) {
-                        client.create().forPath("/leader", port.getBytes());
+                        client.create().forPath("/leader", url.getBytes());
                     } else {
-                        client.setData().forPath("/leader", port.getBytes());
+                        client.setData().forPath("/leader", url.getBytes());
                     }
                 }
 

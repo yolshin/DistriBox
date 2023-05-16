@@ -26,8 +26,13 @@ public class LeaderObserver {
         client.start();
     }
 
-    public String getLeaderId() throws Exception {
-        byte[] data = client.getData().forPath("/leader");
+    public String getLeaderId() {
+        byte[] data = new byte[0];
+        try {
+            data = client.getData().forPath("/leader");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return new String(data, StandardCharsets.UTF_8);
     }
 

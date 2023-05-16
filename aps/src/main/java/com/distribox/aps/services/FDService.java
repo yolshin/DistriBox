@@ -1,12 +1,15 @@
-package com.distribox.aps.Services;
+package com.distribox.aps.services;
 
 import java.util.*;
 
+import com.distribox.aps.dto.FileDataDto;
+import com.distribox.aps.zookeeper.LeaderObserver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import com.distribox.aps.dto.RequestDto;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * 
@@ -18,6 +21,9 @@ import com.distribox.aps.dto.RequestDto;
 @Service
 public class FDService {
 
+	@Autowired
+	private LeaderObserver leaderObserver;
+
 	// TODO add body to request
 	// TODO add error and succes codes
 
@@ -26,19 +32,19 @@ public class FDService {
 	 * @param request
 	 * @return list of new file servers
 	 */
-	public List<String> getNewServerList(RequestDto request) {
+	public ArrayList<String> getNewServerList(RequestDto request) {
 		// get list of file servers from database
 		// return list of file servers
 
-//		String server = "http://localhost:8081/getNewServerList";
-//		WebClient webClient = WebClient.create();
-//		ArrayList<String> serverList = webClient
-//				.get()
-//				.uri(server)
-//				.retrieve().bodyToMono(new ParameterizedTypeReference<ArrayList<String>>() {
-//				}).block();
+		String server = leaderObserver.getLeaderId();
+		WebClient webClient = WebClient.create();
 
-		return List.of("http://fss2:8081");
+		return webClient
+				.get()
+				.uri(server + "/serverids")
+				.retrieve()
+				.bodyToMono(new ParameterizedTypeReference<ArrayList<String>>(){})
+				.block();
 	}
 
 	/**

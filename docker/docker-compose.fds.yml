@@ -27,12 +27,13 @@ services:
         volumes:
             - ../fds/:/fds
         ports: 
-            - 8092:8090
+            - 8092:8092
         command: mvn spring-boot:run
         depends_on:
             - postgresdb1
         environment:
             SERVER_PORT: 8092
+            SERVER_URL: http://fds1:8092
             ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
             SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb1:5432/postgres
             SPRING_DATASOURCE_USERNAME: postgres
@@ -43,12 +44,13 @@ services:
         volumes:
             - ../fds/:/fds
         ports:
-            - 8093:8090
+            - 8093:8093
         command: mvn spring-boot:run
         depends_on:
             - postgresdb2
         environment:
             SERVER_PORT: 8093
+            SERVER_URL: http://fds2:8093
             ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
             SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb2:5432/postgres
             SPRING_DATASOURCE_USERNAME: postgres
@@ -59,12 +61,13 @@ services:
         volumes:
             - ../fds/:/fds
         ports:
-            - 8094:8090
+            - 8094:8094
         command: mvn spring-boot:run
         depends_on:
             - postgresdb3
         environment:
             SERVER_PORT: 8094
+            SERVER_URL: http://fds3:8094
             ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
             SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb3:5432/postgres
             SPRING_DATASOURCE_USERNAME: postgres

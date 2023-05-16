@@ -1,7 +1,8 @@
-package com.distribox.aps.Services;
+package com.distribox.aps.services;
 
 import java.util.*;
 
+import com.distribox.aps.dto.FileDataDto;
 import com.distribox.aps.dto.RequestDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +21,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Service
 public class FSService {
 
-	// TODO add error and succes codes
+	// TODO add error and success codes
 	// TODO add delete method
 
 	/**
@@ -52,8 +53,7 @@ public class FSService {
 					.body(BodyInserters.fromValue(requestBodyJson))
 					.retrieve()
 					.bodyToMono(String.class)
-					.subscribe(System.out::println)
-					.toString();
+					.block();
 
 //			WebClient webClient = WebClient.create();
 //			webClient.post()

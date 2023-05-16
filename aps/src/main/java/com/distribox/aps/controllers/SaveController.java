@@ -1,9 +1,10 @@
 package com.distribox.aps.controllers;
 
+import com.distribox.aps.dto.FileDataDto;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.distribox.aps.Services.FDService;
-import com.distribox.aps.Services.FSService;
+import com.distribox.aps.services.FDService;
+import com.distribox.aps.services.FSService;
 import com.distribox.aps.dto.RequestDto;
 
 import java.util.*;

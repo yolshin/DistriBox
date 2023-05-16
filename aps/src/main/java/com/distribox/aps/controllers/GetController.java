@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.distribox.aps.Services.FDService;
-import com.distribox.aps.Services.FSService;
+import com.distribox.aps.services.FDService;
+import com.distribox.aps.services.FSService;
 import com.distribox.aps.dto.RequestDto;
 
 /**
