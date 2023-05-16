@@ -34,7 +34,6 @@ public class FilesController {
 
 	@PostMapping("/saveFile")
 	public File saveFilesRequest(@RequestBody Map<String, Object> body) {
-		//TODO: How to handle nonexistant user?
 		log.info("Save!");
 		String filepath = (String) body.get("filepath");
 		String userid = (String) body.get("userid");
@@ -48,7 +47,6 @@ public class FilesController {
 		List<String> serverids = (List<String>) body.get("serverids");
 		Set<Server> serverSet = new HashSet<>();
 		for (String serverid : serverids) {
-//			Server s = serversRepository.findById(UUID.fromString(serverid)).get();
 			Server s = serversRepository.findById(serverid).get();
 			serverSet.add(s);
 		}
@@ -80,7 +78,11 @@ public class FilesController {
 		return file;
 	}
 
-	///Endpoint for ack
+	/**
+	 * Endpoint for ACK
+	 * @param fileid ID of the file sending an ACK for
+	 * @return An OK response if the file exists and is saved, badRequest if not.
+	 */
 	@PostMapping("/savedFile")
 	public ResponseEntity<String> saveAck(String fileid) {
 		File fileToSave = fileMap.get(fileid);
