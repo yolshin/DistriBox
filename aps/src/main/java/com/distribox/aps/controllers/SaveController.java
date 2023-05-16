@@ -45,7 +45,7 @@ public class SaveController {
 
 		List<String> serverList = fdService.getNewServerList(request);
 		String ack = fsService.saveFile(serverList, request);
-		return ack + "and Saved!";
+		return "SAVE STATUS RESPONSE FROM SERVER: " + ack;
 	}
 
 }

@@ -20,7 +20,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Service
 public class FSService {
 
-	// TODO add body to request
+	// TODO add error and succes codes
+	// TODO add delete method
 
 	/**
 	 * 
@@ -31,6 +32,8 @@ public class FSService {
 	public String saveFile(List<String> servers, RequestDto request) {
 		// send file to server
 		// return success message
+		int counter = 0;
+		String returnAcks = "";
 		for (String server : servers) {
 			ObjectMapper objectMapper = new ObjectMapper();
 			String requestBodyJson = null;
@@ -58,8 +61,15 @@ public class FSService {
 //					.contentType(MediaType.APPLICATION_JSON)
 //					.body(BodyInserters.fromValue(requestBodyJson))
 
+			returnAcks += ack + ", ";
+			if (ack != null) { //? Does this work?
+				counter++;
+			}
 		}
-		return "File sent!";
+		if (counter < 3) {
+			return "File not saved! Only saved on " + counter + " servers! Try again!";
+		}
+		return "File sent! To " + counter + " servers: Acks:    " + returnAcks;
 	}
 
 	/**
@@ -90,7 +100,8 @@ public class FSService {
 					.retrieve()
 					.bodyToMono(String.class)
 					.block();
-			if (file != null) {
+
+			if (file != null) { //? Does this work?
 				return file;
 			}
 
@@ -115,6 +126,9 @@ public class FSService {
 					.uri(server + "/deleteFile")
 					.retrieve().bodyToMono(String.class).block();
 
+			if (ack == null) { //? Does this work?
+				return "File not deleted from all servers! Try again!";
+			}
 		}
 		return "File deleted!";
 	}
