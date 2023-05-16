@@ -1,0 +1,12 @@
+services:
+  aps1:
+    image: maven:3.9.1-eclipse-temurin-17
+    working_dir: /aps
+    volumes:
+      - ../aps/:/fss
+    ports:
+      - 8180:8180
+    command: mvn spring-boot:run
+    environment:
+      SERVER_PORT: 8180
+      ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181

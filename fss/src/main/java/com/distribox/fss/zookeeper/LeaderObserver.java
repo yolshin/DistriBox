@@ -6,15 +6,12 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class LeaderObserver {
-
-
-    @Value("${fss.data.dir}")
-    private String clientId;
 
     @Value("${zookeeper.connectionString}")
     private String connectString;
@@ -23,8 +20,7 @@ public class LeaderObserver {
 
     @Bean
     public void startZookeeper() {
-        this.clientId = clientId;
-        CuratorFramework client = CuratorFrameworkFactory.builder()
+        this.client = CuratorFrameworkFactory.builder()
                 .connectString(connectString)
                 .retryPolicy(new ExponentialBackoffRetry(Integer.MAX_VALUE, 3))
                 .build();

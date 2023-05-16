@@ -12,10 +12,6 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 public class LeaderObserver {
 
-
-    @Value("${fss.data.dir}")
-    private String clientId;
-
     @Value("${zookeeper.connectionString}")
     private String connectString;
 
@@ -23,8 +19,7 @@ public class LeaderObserver {
 
     @Bean
     public void startZookeeper() {
-        this.clientId = clientId;
-        CuratorFramework client = CuratorFrameworkFactory.builder()
+        client = CuratorFrameworkFactory.builder()
                 .connectString(connectString)
                 .retryPolicy(new ExponentialBackoffRetry(Integer.MAX_VALUE, 3))
                 .build();
