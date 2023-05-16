@@ -55,11 +55,10 @@ public class ServersController {
 	@PostMapping("/heartbeat")
 	public ResponseEntity<String> postHeartbeat(@RequestBody Map<String, String> body) {
 		//TODO: Add test for heartbeat
-		String serverIdString = body.get("server");
+		String serverId = body.get("server");
 		String servertime = body.get("time");
-		UUID serverId = UUID.fromString(serverIdString);
 		Long lastUsedTime = Long.parseLong(servertime);
-		Server server = serversRepository.getReferenceById(serverId);
+		Server server = serversRepository.findById(serverId).get();
 		server.setLastSeen(lastUsedTime);
 		serversRepository.save(server);
 		return ResponseEntity.ok("OK");

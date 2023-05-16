@@ -9,9 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface ServersRepository extends JpaRepository<Server, UUID> {
+public interface ServersRepository extends JpaRepository<Server, String> {
 
-	Optional<Server> findById(UUID id);
 	List<Server> findByState(Server.State state, Sort sort);
 
 	List<Server> findByFiles_fileid(UUID fileid, Sort sort);

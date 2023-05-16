@@ -4,10 +4,6 @@ import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.annotations.SQLUpdate;
 
 import java.util.*;
 
@@ -25,25 +21,29 @@ import java.util.*;
 public class Server {
 
 	public Server() {
+		this.id = UUID.randomUUID().toString();
 	}
-
+	public Server(String id) {
+		this.id = id;
+	}
 
 	public enum State {
 		OPEN, BUSY, OFFLINE
 	}
 
-
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id", nullable = false)
-	private UUID id;
+	@SequenceGenerator(
+			name = "server_sequence",
+			sequenceName = "server_sequence",
+			allocationSize = 1
+	)
+	private String id;
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
-
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
 

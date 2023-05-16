@@ -48,7 +48,8 @@ public class FilesController {
 		List<String> serverids = (List<String>) body.get("serverids");
 		Set<Server> serverSet = new HashSet<>();
 		for (String serverid : serverids) {
-			Server s = serversRepository.findById(UUID.fromString(serverid)).get();
+//			Server s = serversRepository.findById(UUID.fromString(serverid)).get();
+			Server s = serversRepository.findById(serverid).get();
 			serverSet.add(s);
 		}
 		File newFile = new File(filepath, user);
@@ -82,7 +83,6 @@ public class FilesController {
 	///Endpoint for ack
 	@PostMapping("/savedFile")
 	public ResponseEntity<String> saveAck(String fileid) {
-		//todo: make some kind of queue for files waiting to be saved
 		File fileToSave = fileMap.get(fileid);
 		if (fileToSave == null) {
 			return ResponseEntity.badRequest().body("Invalid fileid");

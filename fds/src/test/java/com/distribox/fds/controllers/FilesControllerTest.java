@@ -1,6 +1,7 @@
 package com.distribox.fds.controllers;
 
 import com.distribox.fds.SharedTests;
+import com.distribox.fds.entities.Server;
 import com.distribox.fds.entities.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
@@ -50,7 +50,7 @@ public class FilesControllerTest extends SharedTests {
 		String filepath = "/saveFileTest/file1.txt";
 		body.put("filepath", filepath);
 		body.put("userid", "sftUser");
-		List<String> serverids = serverList().stream().map(s -> s.getId().toString()).toList();
+		List<String> serverids = serverList().stream().map(Server::getId).toList();
 		body.put("serverids", serverids);
 		Map<String, String> response = restTemplate.postForObject("http://localhost:" + port + "/saveFile", body,
 				Map.class);
