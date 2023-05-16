@@ -38,7 +38,7 @@ public class DeleteController {
 
 		List<String> serverList = fdService.getServerList(request);
 		String ack = fsService.deleteFile(serverList, request);
-		return ack + "and Removed!";
+		return "DELETE STATUS RESPONSE FROM SERVER: " + ack;
 	}
 
 }
