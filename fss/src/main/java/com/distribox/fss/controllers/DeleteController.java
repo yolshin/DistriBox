@@ -14,7 +14,7 @@ public class DeleteController {
     DeleteService deleteService;
 
     @DeleteMapping("/delete")
-    public boolean delete(@RequestBody RequestDto file) {
+    public String delete(@RequestBody RequestDto file) {
         // Delete file.
         return deleteService.deleteFile(file);
         // Send ACK to FDS (?).
