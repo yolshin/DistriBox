@@ -38,7 +38,7 @@ public class FDService {
 //				.retrieve().bodyToMono(new ParameterizedTypeReference<ArrayList<String>>() {
 //				}).block();
 
-		return List.of("http://localhost:8081");
+		return List.of("http://fss2:8081");
 	}
 
 	/**

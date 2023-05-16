@@ -69,6 +69,17 @@ public class FilesController {
 		}
 	}
 
+	@GetMapping("/getFileByName")
+	public ResponseEntity<File> getFileById(String filePath) {
+		Optional<File> fileOp = filesRepository.findByFilepath(filePath);
+		if (fileOp.isEmpty()) {
+			return ResponseEntity.badRequest().body(null);
+		} else {
+			File file = fileOp.get();
+			return ResponseEntity.ok(file);
+		}
+	}
+
 	@PostMapping("/deleteFile")
 	public File deleteFilesReuqest(String fileid) {
 		UUID fileUUID = UUID.fromString(fileid);
@@ -92,6 +103,12 @@ public class FilesController {
 		fileToSave = filesRepository.save(fileToSave);
 		Set<Server> serverSet = fileToSave.getServers();
 		serverSet = new HashSet<>(serversRepository.saveAll(serverSet));
+		for (Server server : serverSet) {
+			server.addFile(fileToSave);
+			fileToSave.addServer(server);
+			serversRepository.save(server);
+		}
+		filesRepository.save(fileToSave);
 		fileMap.remove(fileid);
 
 		return ResponseEntity.ok("OK");
