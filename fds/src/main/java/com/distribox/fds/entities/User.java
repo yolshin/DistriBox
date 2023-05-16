@@ -30,9 +30,9 @@ public class User {
 
 	@JsonIdentityInfo(
 			generator = ObjectIdGenerators.PropertyGenerator.class,
-			property = "fileid")
+			property = "filepath")
 	@JsonIdentityReference(alwaysAsId=true)
-	@JsonProperty("fileids")
+	@JsonProperty("filepaths")
 	public List<File> getFiles() {
 		return files;
 	}

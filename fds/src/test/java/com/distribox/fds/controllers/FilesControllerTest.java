@@ -54,16 +54,16 @@ public class FilesControllerTest extends SharedTests {
 		body.put("serverids", serverids);
 		Map<String, String> response = restTemplate.postForObject("http://localhost:" + port + "/saveFile", body,
 				Map.class);
-		String fileid = response.get("fileid");
-		assertNotNull(fileid);
+		String filePath2 = response.get("filepath");
+		assertNotNull(filePath2);
 		User u = usersRepository.findByUserid("sftUser");
 		Set<String> filepaths = u.files.stream().map(f -> f.filepath).collect(Collectors.toSet());
 		assertFalse(filepaths.contains(filepath));
 		ResponseEntity<String> savedResponse = restTemplate.postForEntity("http://localhost:" + port +
-						"/savedFile?fileid=" + fileid, null, String.class);
+						"/savedFile?filePath=" + filePath2, null, String.class);
 		assertTrue(savedResponse.getStatusCode().is2xxSuccessful());
 		ResponseEntity<Map> responseEntity =
-				restTemplate.getForEntity("http://localhost:" + port + "/getFile?fileid=" + fileid,
+				restTemplate.getForEntity("http://localhost:" + port + "/getFile?filePath=" + filePath2,
 				Map.class);
 		assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
 	}

@@ -52,24 +52,13 @@ public class FilesController {
 		}
 		File newFile = new File(filepath, user);
 		newFile.addServers(serverSet);
-		fileMap.put(newFile.getFileid().toString(), newFile);
+		fileMap.put(newFile.getFilepath(), newFile);
 
 		return newFile;
 	}
 
-	@GetMapping("/getFile")
-	public ResponseEntity<File> getFilesRequest(String fileid) {
-		UUID fileUUID = UUID.fromString(fileid);
-		Optional<File> fileOp = filesRepository.findById(fileUUID);
-		if (fileOp.isEmpty()) {
-			return ResponseEntity.badRequest().body(null);
-		} else {
-			File file = fileOp.get();
-			return ResponseEntity.ok(file);
-		}
-	}
 
-	@GetMapping("/getFileByName")
+	@GetMapping("/getFile")
 	public ResponseEntity<File> getFileById(String filePath) {
 		Optional<File> fileOp = filesRepository.findByFilepath(filePath);
 		if (fileOp.isEmpty()) {
@@ -81,9 +70,8 @@ public class FilesController {
 	}
 
 	@PostMapping("/deleteFile")
-	public File deleteFilesReuqest(String fileid) {
-		UUID fileUUID = UUID.fromString(fileid);
-		File file = filesRepository.getReferenceById(fileUUID);
+	public File deleteFilesReuqest(String filepath) {
+		File file = filesRepository.findByFilepath(filepath).get();
 		filesRepository.delete(file);
 		//TODO: Test that it's also gone from owning servers
 		return file;
@@ -91,14 +79,14 @@ public class FilesController {
 
 	/**
 	 * Endpoint for ACK
-	 * @param fileid ID of the file sending an ACK for
+	 * @param filePath ID of the file sending an ACK for
 	 * @return An OK response if the file exists and is saved, badRequest if not.
 	 */
 	@PostMapping("/savedFile")
-	public ResponseEntity<String> saveAck(String fileid) {
-		File fileToSave = fileMap.get(fileid);
+	public ResponseEntity<String> saveAck(String filePath) {
+		File fileToSave = fileMap.get(filePath);
 		if (fileToSave == null) {
-			return ResponseEntity.badRequest().body("Invalid fileid");
+			return ResponseEntity.badRequest().body("Invalid filepath");
 		}
 		fileToSave = filesRepository.save(fileToSave);
 		Set<Server> serverSet = fileToSave.getServers();
@@ -109,7 +97,7 @@ public class FilesController {
 			serversRepository.save(server);
 		}
 		filesRepository.save(fileToSave);
-		fileMap.remove(fileid);
+		fileMap.remove(filePath);
 
 		return ResponseEntity.ok("OK");
 	}

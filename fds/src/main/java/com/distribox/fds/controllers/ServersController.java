@@ -29,34 +29,34 @@ public class ServersController {
 	@Autowired
 	private FilesRepository filesRepository;
 
-	public List<Server> getServers(String fileid, Server.State state) {
+	public List<Server> getServers(String filePath, Server.State state) {
 		Sort sort = Sort.by("lastSeen").descending();
-		if (fileid == null) {
+		if (filePath == null) {
 			if (state == null) {
 				return serversRepository.findAll(sort);
 			}
 			return serversRepository.findByState(state, sort);
 		}
 		if (state == null) {
-			return serversRepository.findByFiles_fileid(UUID.fromString(fileid), sort);
+			return serversRepository.findByFiles_filepath(filePath, sort);
 		}
-		return serversRepository.findByStateAndFiles_fileid(state, UUID.fromString(fileid), sort);
+		return serversRepository.findByStateAndFiles_filepath(state, filePath, sort);
 	}
 
 	@GetMapping("/servers")
 	@ResponseBody
-	public ResponseEntity<List<Server>> getServersRequest(@RequestParam(required = false) String fileid,
+	public ResponseEntity<List<Server>> getServersRequest(@RequestParam(required = false) String filePath,
 	                                      @RequestParam(required = false) Server.State state) {
-		List<Server> servers = getServers(fileid, state);
+		List<Server> servers = getServers(filePath, state);
 		ResponseEntity<List<Server>> response = ResponseEntity.ok(servers);
 		return response;
 	}
 
 	@GetMapping("/serverids")
 	@ResponseBody
-	public ResponseEntity<List<String>> getServerIds(@RequestParam(required = false) String fileid,
+	public ResponseEntity<List<String>> getServerIds(@RequestParam(required = false) String filePath,
 	                                                      @RequestParam(required = false) Server.State state) {
-		List<String> servers = getServers(fileid, state).stream().map(s -> s.getId()).toList();
+		List<String> servers = getServers(filePath, state).stream().map(s -> s.getId()).toList();
 		ResponseEntity<List<String>> response = ResponseEntity.ok(servers);
 		return response;
 	}

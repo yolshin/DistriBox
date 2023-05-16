@@ -15,35 +15,19 @@ import java.util.*;
 @JsonIgnoreProperties(value = {"servers", "userid"},allowGetters = true)
 public class File {
 
+	@Id
 	@SequenceGenerator(
 			name = "file_sequence",
 			sequenceName = "file_sequence",
 			allocationSize = 1
 	)
-//	@GeneratedValue
-	@Id
-	@Column(name = "fileid", nullable = false)
-	public UUID fileid;
 	public String filepath;
 
 	public File(String filepath, String userid) {
-		this(filepath, new User(userid), null);
-	}
-	public File(String filepath, String userid, UUID fileid) {
-		this(filepath, new User(userid), fileid);
+		this(filepath, new User(userid));
 	}
 
 	public File(String filepath, User user) {
-		this(filepath, user, null);
-	}
-
-	public File(String filepath, User user, UUID fileid) {
-		if (fileid == null) {
-			this.fileid = UUID.randomUUID();
-		} else {
-			this.fileid = fileid;
-		}
-
 		this.filepath = filepath;
 		this.user = user;
 	}
@@ -80,7 +64,7 @@ public class File {
 
 	@Override
 	public String toString() {
-		return "File [" + fileid + ", " + filepath + ", " + user.userid + "]";
+		return "File [" + filepath + ", " + user.userid + "]";
 	}
 
 	public void addServer(Server server) {
@@ -116,11 +100,11 @@ public class File {
 
 		File file = (File) o;
 
-		return Objects.equals(fileid, file.fileid);
+		return Objects.equals(filepath, file.filepath);
 	}
 
 	@Override
 	public int hashCode() {
-		return fileid != null ? fileid.hashCode() : 0;
+		return filepath != null ? filepath.hashCode() : 0;
 	}
 }

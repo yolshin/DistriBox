@@ -24,7 +24,7 @@ public class HelloWorldController {
 	public void getFiles() {
 		List<File> files = new ArrayList<>(filesRepository.findAll());
 		for (File f : files) {
-			log.info("File " + f.fileid);
+			log.info("File " + f.filepath);
 		}
 	}
 

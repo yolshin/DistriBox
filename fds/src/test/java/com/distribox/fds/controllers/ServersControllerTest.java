@@ -92,7 +92,7 @@ class ServersControllerTest extends SharedTests {
 		List<File> files = serverListFilesTransaction();
 		File mFile1 = files.get(0);
 		ResponseEntity<List> response =
-				restTemplate.getForEntity("http://localhost:" + port + "/servers?fileid=" + mFile1.fileid.toString(),
+				restTemplate.getForEntity("http://localhost:" + port + "/servers?filePath=" + mFile1.filepath,
 						List.class);
 		List<HashMap<String, Object>> list = response.getBody();
 		System.out.println(response);

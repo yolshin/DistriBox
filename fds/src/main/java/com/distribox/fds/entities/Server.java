@@ -52,14 +52,14 @@ public class Server {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="s_f",
 			joinColumns = {@JoinColumn(name="id", referencedColumnName = "id")},
-			inverseJoinColumns = {@JoinColumn(name="fileid", referencedColumnName = "fileid")})
+			inverseJoinColumns = {@JoinColumn(name="filepath", referencedColumnName = "filepath")})
 	private Set<File> files = new HashSet<>();
 
 	@JsonIdentityInfo(
 			generator = ObjectIdGenerators.PropertyGenerator.class,
-			property = "fileid")
+			property = "filepath")
 	@JsonIdentityReference(alwaysAsId=true)
-	@JsonProperty("fileids")
+	@JsonProperty("filepaths")
 	public Set<File> getFiles() {
 		return files;
 	}
