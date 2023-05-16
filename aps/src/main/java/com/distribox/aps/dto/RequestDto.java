@@ -1,4 +1,4 @@
-package com.distribox.aps;
+package com.distribox.aps.dto;
 
 import lombok.Data;
 

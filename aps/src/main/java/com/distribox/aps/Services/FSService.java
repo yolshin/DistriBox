@@ -2,7 +2,7 @@ package com.distribox.aps.Services;
 
 import java.util.*;
 
-import com.distribox.aps.RequestDto;
+import com.distribox.aps.dto.RequestDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
@@ -25,18 +25,17 @@ public class FSService {
 	/**
 	 * 
 	 * @param servers
-	 * @param fileName
-	 * @param fileContents
+	 * @param request
 	 * @return success message
 	 */
-	public String saveFile(List<String> servers, RequestDto file) {
+	public String saveFile(List<String> servers, RequestDto request) {
 		// send file to server
 		// return success message
 		for (String server : servers) {
 			ObjectMapper objectMapper = new ObjectMapper();
 			String requestBodyJson = null;
 			try {
-				requestBodyJson = objectMapper.writeValueAsString(file);
+				requestBodyJson = objectMapper.writeValueAsString(request);
 			} catch (JsonProcessingException e) {
 				throw new RuntimeException(e);
 			}
@@ -59,8 +58,6 @@ public class FSService {
 //					.contentType(MediaType.APPLICATION_JSON)
 //					.body(BodyInserters.fromValue(requestBodyJson))
 
-
-
 		}
 		return "File sent!";
 	}
@@ -68,17 +65,17 @@ public class FSService {
 	/**
 	 * 
 	 * @param servers
-	 * @param fileName
+	 * @param request
 	 * @return File
 	 */
-	public String getFile(List<String> servers, RequestDto fileName) {
+	public String getFile(List<String> servers, RequestDto request) {
 		// get file from server
 		// return file
 		for (String server : servers) {
 			ObjectMapper objectMapper = new ObjectMapper();
 			String requestBodyJson = null;
 			try {
-				requestBodyJson = objectMapper.writeValueAsString(fileName);
+				requestBodyJson = objectMapper.writeValueAsString(request);
 			} catch (JsonProcessingException e) {
 				throw new RuntimeException(e);
 			}
@@ -104,10 +101,10 @@ public class FSService {
 	/**
 	 * 
 	 * @param servers
-	 * @param fileName
+	 * @param request
 	 * @return success message
 	 */
-	public String deleteFile(List<String> servers, RequestDto fileName) {
+	public String deleteFile(List<String> servers, RequestDto request) {
 		// delete file from servers
 		// return success message
 		for (String server : servers) {
