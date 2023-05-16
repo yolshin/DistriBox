@@ -107,7 +107,7 @@ public class ZookeeperConfig {
 
                 // Sleep for some time before running again
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     // Handle the exception
                 }

@@ -3,7 +3,7 @@ services:
     image: maven:3.9.1-eclipse-temurin-17
     working_dir: /aps
     volumes:
-      - ../aps/:/fss
+      - ../aps/:/aps
     ports:
       - 8180:8180
     command: mvn spring-boot:run
