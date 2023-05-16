@@ -1,0 +1,91 @@
+services:
+  fss1:
+    image: maven:3.9.1-eclipse-temurin-17
+    working_dir: /fss
+    volumes:
+      - ./:/fss
+    ports:
+      - 8080:8080
+    command: mvn spring-boot:run
+    environment:
+      SERVER_PORT: 8080
+      ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
+      FSS_DATA_DIR: fss1
+
+  fss2:
+    image: maven:3.9.1-eclipse-temurin-17
+    working_dir: /fss
+    volumes:
+      - ./:/fss
+    ports:
+      - 8081:8081
+    command: mvn spring-boot:run
+    environment:
+      SERVER_PORT: 8081
+      ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
+      FSS_DATA_DIR: fss2
+
+  fss3:
+    image: maven:3.9.1-eclipse-temurin-17
+    working_dir: /fss
+    volumes:
+      - ./:/fss
+    ports:
+      - 8082:8082
+    command: mvn spring-boot:run
+    environment:
+      SERVER_PORT: 8082
+      ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
+      FSS_DATA_DIR: fss3
+
+#  fss4:
+#    image: maven:3.9.1-eclipse-temurin-17
+#    working_dir: /fss
+#    volumes:
+#      - ./:/fss
+#    ports:
+#      - 8083:8083
+#    command: mvn spring-boot:run
+#    environment:
+#      SERVER_PORT: 8083
+#      ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
+#      FSS_DATA_DIR: fss4
+#
+#  fss5:
+#    image: maven:3.9.1-eclipse-temurin-17
+#    working_dir: /fss
+#    volumes:
+#      - ./:/fss
+#    ports:
+#      - 8084:8084
+#    command: mvn spring-boot:run
+#    environment:
+#      SERVER_PORT: 8084
+#      ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
+#      FSS_DATA_DIR: fss5
+#
+#  fss6:
+#    image: maven:3.9.1-eclipse-temurin-17
+#    working_dir: /fss
+#    volumes:
+#      - ./:/fss
+#    ports:
+#      - 8085:8085
+#    command: mvn spring-boot:run
+#    environment:
+#      SERVER_PORT: 8085
+#      ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
+#      FSS_DATA_DIR: fss6
+#
+#  fss7:
+#    image: maven:3.9.1-eclipse-temurin-17
+#    working_dir: /fss
+#    volumes:
+#      - ./:/fss
+#    ports:
+#      - 8086:8086
+#    command: mvn spring-boot:run
+#    environment:
+#      SERVER_PORT: 8086
+#      ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
+#      FSS_DATA_DIR: fss7

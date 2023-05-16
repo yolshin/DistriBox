@@ -1,6 +1,7 @@
 package com.distribox.fss.services;
 
 import com.distribox.fss.RequestDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -8,9 +9,12 @@ import java.io.*;
 @Service
 public class RetrieveService {
 
+    @Value("${fss.data.dir}")
+    private String dataDir;
+
     public String getFile(RequestDto file) {
         // Get file.
-        String fileName = file.getUserId() + File.separator + file.getFilePath() + File.separator + file.getFileName(); // This includes the full path. // TODO: Fill this in.
+        String fileName = dataDir + File.separator + file.getUserId() + File.separator + file.getFilePath() + File.separator + file.getFileName(); // This includes the full path. // TODO: Fill this in.
         File fileOnDisk = new File(System.getProperty("user.dir") + File.separator + "data" + File.separator + fileName);
         StringBuilder fileContents = new StringBuilder();
         try (BufferedReader fileReader = new BufferedReader(new FileReader(fileOnDisk))) {

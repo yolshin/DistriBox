@@ -7,6 +7,7 @@ import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListener;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListenerAdapter;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ public class ZookeeperConfig {
 
     @Bean
     public CuratorFramework curatorFramework() throws Exception {
+        System.out.println("Zookeeper connection string: " + connectionString + " port: " + port);
         client = CuratorFrameworkFactory.builder()
                 .connectString(connectionString)
                 .retryPolicy(new ExponentialBackoffRetry(Integer.MAX_VALUE, 3))
@@ -33,6 +35,7 @@ public class ZookeeperConfig {
         client.start();
 
         // Create the LeaderLatch
+        //allows the FDS to participate in leader election
         LeaderLatch leaderLatch = new LeaderLatch(client, "/my-group", port);
         leaderLatch.start();
         // Run the code in a loop
@@ -44,7 +47,12 @@ public class ZookeeperConfig {
                     System.out.println("I am NOT the leader on port " + port);
                 } else {
                     System.out.println("I AM the leader on port " + port + " and I do nothing YET");
-                    client.setData().forPath("/leader", port.getBytes());
+                    Stat stat = client.checkExists().forPath("/leader");
+                    if (stat == null) {
+                        client.create().forPath("/leader", port.getBytes());
+                    } else {
+                        client.setData().forPath("/leader", port.getBytes());
+                    }
                 }
 
                 // Sleep for some time before running again

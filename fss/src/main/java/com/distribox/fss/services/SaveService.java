@@ -1,6 +1,7 @@
 package com.distribox.fss.services;
 
 import com.distribox.fss.RequestDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
@@ -11,11 +12,14 @@ import java.io.IOException;
 @Service
 public class SaveService {
 
+    @Value("${fss.data.dir}")
+    private String dataDir;
+
     public void saveFile(RequestDto file) {
         // Parse file.
 
         String username = file.getUserId(); // TODO: Fill this in!
-        String filePath = username + File.separator + file.getFilePath(); // includes username (first part) // TODO: Fill this in!
+        String filePath = dataDir + File.separator + username + File.separator + file.getFilePath(); // includes username (first part) // TODO: Fill this in!
         String fileName = file.getFileName(); // Name of file without path. // TODO: Fill this in!
         String fileContents = file.getFileContents(); // TODO: Fill this in!
 
@@ -29,15 +33,17 @@ public class SaveService {
 
         // Save to disk.
         File dirPath1 = new File(dirPath + File.separator + "data" + File.separator + filePath);
+        System.out.println(dirPath1.getPath());
         boolean dirsMade = dirPath1.mkdirs();
+        System.out.println("Dirs made: " + dirsMade);
         File fileWithPath = new File(dirPath1.getPath() + File.separator + fileName);
         try {
             boolean fileMade = fileWithPath.createNewFile();
+            System.out.println("File made: " + fileMade);
         } catch (IOException ignored) {
         }
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(fileWithPath, true))) {
             fileWriter.write(fileContents);
-            fileWriter.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
