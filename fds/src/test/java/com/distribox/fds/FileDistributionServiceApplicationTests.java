@@ -7,26 +7,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.PropertySource;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//@SpringBootTest(classes = FilesRepository.class)
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//@PropertySource("classpath:application.properties")
-//@ExtendWith(SpringExtension.class)
-//@ContextHierarchy({
-//		@ContextConfiguration(classes = SharedTests.class)
-//})
-
-class Thing2 {
-	@Autowired
-	FilesRepository filesRepository;
-}
-
-@SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@PropertySource("classpath:application.properties")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FileDistributionServiceApplicationTests extends SharedTests {
 
 	@Test
