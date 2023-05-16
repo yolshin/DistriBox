@@ -52,12 +52,21 @@ public class ServersController {
 		return response;
 	}
 
+	@GetMapping("/serverids")
+	@ResponseBody
+	public ResponseEntity<List<String>> getServerIds(@RequestParam(required = false) String fileid,
+	                                                      @RequestParam(required = false) Server.State state) {
+		List<String> servers = getServers(fileid, state).stream().map(s -> s.getId()).toList();
+		ResponseEntity<List<String>> response = ResponseEntity.ok(servers);
+		return response;
+	}
+
 	@PostMapping("/heartbeat")
 	public ResponseEntity<String> postHeartbeat(@RequestBody Map<String, String> body) {
 		//TODO: Add test for heartbeat
 		String serverId = body.get("server");
-		String servertime = body.get("time");
-		Long lastUsedTime = Long.parseLong(servertime);
+		String serverTime = body.get("time");
+		Long lastUsedTime = Long.parseLong(serverTime);
 		Optional<Server> serverOpt = serversRepository.findById(serverId);
 		Server server;
 		server = serverOpt.orElseGet(() -> new Server(serverId));
