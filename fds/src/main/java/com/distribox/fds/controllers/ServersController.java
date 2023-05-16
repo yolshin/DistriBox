@@ -58,7 +58,9 @@ public class ServersController {
 		String serverId = body.get("server");
 		String servertime = body.get("time");
 		Long lastUsedTime = Long.parseLong(servertime);
-		Server server = serversRepository.findById(serverId).get();
+		Optional<Server> serverOpt = serversRepository.findById(serverId);
+		Server server;
+		server = serverOpt.orElseGet(() -> new Server(serverId));
 		server.setLastSeen(lastUsedTime);
 		serversRepository.save(server);
 		return ResponseEntity.ok("OK");
