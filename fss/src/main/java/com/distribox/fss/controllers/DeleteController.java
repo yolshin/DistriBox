@@ -1,5 +1,6 @@
 package com.distribox.fss.controllers;
 
+import com.distribox.fss.RequestDto;
 import com.distribox.fss.services.DeleteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +14,7 @@ public class DeleteController {
     DeleteService deleteService;
 
     @DeleteMapping("/delete")
-    public boolean delete(@RequestBody String file) {
+    public String delete(@RequestBody RequestDto file) {
         // Delete file.
         return deleteService.deleteFile(file);
         // Send ACK to FDS (?).
