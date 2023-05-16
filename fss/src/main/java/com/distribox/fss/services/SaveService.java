@@ -13,7 +13,7 @@ import java.io.IOException;
 public class SaveService {
 
     @Value("${fss.data.dir}")
-    private String dataDir;
+    private String dataDir; // which file server service the data is being saved on
 
     public void saveFile(RequestDto file) {
         // Parse file.
@@ -25,7 +25,7 @@ public class SaveService {
 
         System.out.println(fileName);
         System.out.println(username);
-        if (fileName.equals(username) || fileName.equals("data")) {
+        if (fileName.equals(username) || fileName.equals(dataDir) || fileName.equals("data")) {
             throw new RuntimeException("Illegal file name: " + fileName);
         }
 

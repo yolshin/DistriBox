@@ -16,6 +16,9 @@ public class RetrieveService {
         // Get file.
         String fileName = dataDir + File.separator + file.getUserId() + File.separator + file.getFilePath() + File.separator + file.getFileName(); // This includes the full path. // TODO: Fill this in.
         File fileOnDisk = new File(System.getProperty("user.dir") + File.separator + "data" + File.separator + fileName);
+        if (!fileOnDisk.canRead()) {
+            return null;
+        }
         StringBuilder fileContents = new StringBuilder();
         try (BufferedReader fileReader = new BufferedReader(new FileReader(fileOnDisk))) {
             boolean appendLineSeparator = false;
