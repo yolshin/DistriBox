@@ -15,6 +15,7 @@ import org.springframework.web.util.UriUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class FilesController {
@@ -37,13 +38,18 @@ public class FilesController {
 		String filepath = (String) body.get("filepath");
 		String userid = (String) body.get("userid");
 		User user;
+		List<String> serverids = (List<String>) body.get("serverids");
+		//TODO: Merge if not saved, but in fileMap
+		Optional<File> existingFile = filesRepository.findByFilepath(filepath);
+		if (existingFile.isPresent()) {
+			return mergeServers(existingFile.get(), serverids);
+		}
 		if (!usersRepository.existsByUseridLike(userid)) {
 			user = new User(userid);
 			usersRepository.save(user);
 		} else {
 			user = usersRepository.findByUserid(userid);
 		}
-		List<String> serverids = (List<String>) body.get("serverids");
 		Set<Server> serverSet = new HashSet<>();
 		for (String serverid : serverids) {
 			Server s = serversRepository.findById(serverid).get();
@@ -54,6 +60,14 @@ public class FilesController {
 		fileMap.put(newFile.getFilepath(), newFile);
 
 		return newFile;
+	}
+
+	public File mergeServers(File existingFile, List<String>newIds) {
+		Set<Server>incomingServerSet = newIds.stream()
+				.map(id -> serversRepository.findById(id).get()).collect(Collectors.toSet());
+		existingFile.addServers(incomingServerSet);
+		fileMap.put(existingFile.getFilepath(), existingFile);
+		return existingFile;
 	}
 
 

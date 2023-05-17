@@ -19,10 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,6 +68,27 @@ public class FilesControllerTest extends SharedTests {
 				restTemplate.getForEntity("http://localhost:" + port + "/getFile?filePath=" + filePath2,
 				Map.class);
 		assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+	}
+
+	@Test
+	public void addFileTest() {
+		String filePath = "benFile";
+		List<String> serverids = new ArrayList<>();
+		serverids.add("s2");
+		Map<String, Object> body = new HashMap<>();
+		body.put("filepath", filePath);
+		body.put("userid", "benE");
+		body.put("serverids", serverids);
+		ResponseEntity<Map> response = restTemplate.postForEntity("http://localhost:" + port + "/saveFile", body,
+				Map.class);
+		assertTrue(response.getStatusCode().is2xxSuccessful());
+		String[] expectedIds = {"s1", "s2"};
+		ResponseEntity<String> ackResponse = restTemplate.postForEntity("http://localhost:" + port +
+				"/savedFile?filePath=" + filePath, null, String.class);
+		assertTrue(ackResponse.getStatusCode().is2xxSuccessful());
+		File file = filesRepository.findByFilepath(filePath).get();
+		List<String> actualIds = file.getServers().stream().map(Server::getId).toList();
+		assertArrayEquals(actualIds.toArray(), expectedIds);
 	}
 
 	@Test
