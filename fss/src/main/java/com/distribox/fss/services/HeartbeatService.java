@@ -1,5 +1,6 @@
 package com.distribox.fss.services;
 
+import com.distribox.fss.zookeeper.LeaderObserver;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -8,16 +9,25 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class HeartbeatService {
 
     public void sendHeartbeat() {
-        //TODO: make sure that it gets an acknowledgement from the leader
+        //Note: make sure that it gets an acknowledgement from the leader
         // and to implement retry logic if it doesn't
-        // Send heartbeat.
+        // TODO: This code is buggy.
         String ack = "ACK"; // Replace with your ack message
-        WebClient.create().post()
-                .uri("http://file-distribution-service/ack") // Replace with the appropriate URI
+        WebClient client = WebClient.create();
+        LeaderObserver leaderObserver = new LeaderObserver();
+        String leaderId;
+        try {
+            leaderId = leaderObserver.getLeaderId();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        client.post()
+                .uri(leaderId + "/heartbeat") // Replace with the appropriate URI
                 .contentType(MediaType.APPLICATION_JSON) // Set the content type of the request
                 .bodyValue(ack) // Set the ack data in the request body
                 .retrieve()
-                .bodyToMono(Void.class) // Specify the response type (if needed)
+                .bodyToMono(String.class) // Specify the response type (if needed)
+                .retry()
                 .block();
     }
 
