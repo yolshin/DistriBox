@@ -12,7 +12,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -59,11 +61,22 @@ public class HeartbeatService {
 
         WebClient client = WebClient.create();
 
+        // TODO: Is this appropriate use of retry? Perhaps we should get rid
+        //  of block() since it waits indefinitely. Might defeat the entire purpose
+        //  of retry.
         client.post()
                 .uri(url)  // Replace with your endpoint URL
                 .body(Mono.just(fileSaveMessage), FileSaveMessage.class)
                 .retrieve()
                 .bodyToMono(Void.class)
-                .block();
+                .retryWhen(Retry.backoff(5, Duration.ofSeconds(30)))
+                .subscribe(
+                        response -> {
+                            System.out.println("Ack received back from FDS to FSS!");
+                        },
+                        error -> {
+                            System.err.println("An error occurred: " + error.getMessage());
+                        }
+                );
     }
 }
