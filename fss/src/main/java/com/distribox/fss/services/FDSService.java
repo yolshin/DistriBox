@@ -3,14 +3,9 @@ package com.distribox.fss.services;
 import com.distribox.fss.RequestDto;
 import com.distribox.fss.zookeeper.LeaderObserver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.File;
 
 @Service
 public class FDSService {
@@ -32,20 +27,15 @@ public class FDSService {
         WebClient webClient = WebClient.create();
 
         String responseEntity = webClient.post()
-//                .uri(uriBuilder -> uriBuilder
-//                        .path( "http://localhost:8081" + "/savedFile")
-//                        .queryParam("filePath", filePath)
-//                        .build()
-//                )
-                .uri(leaderUrl + "/savedFile")
-                .bodyValue(filePath)
-//                .contentType(MediaType.TEXT_PLAIN)
-//                .body(BodyInserters.fromValue(filePath))
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
 
-        System.out.println(responseEntity);
+            .uri(leaderUrl + "/savedFile")
+            .bodyValue(filePath)
+    //                .contentType(MediaType.TEXT_PLAIN)
+    //                .body(BodyInserters.fromValue(filePath))
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+
     }
 
 }
