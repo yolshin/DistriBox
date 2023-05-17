@@ -30,8 +30,6 @@ public class FDSService {
 
             .uri(leaderUrl + "/savedFile")
             .bodyValue(filePath)
-    //                .contentType(MediaType.TEXT_PLAIN)
-    //                .body(BodyInserters.fromValue(filePath))
             .retrieve()
             .bodyToMono(String.class)
             .block();
