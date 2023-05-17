@@ -44,6 +44,9 @@ public class FilesController {
 		if (existingFile.isPresent()) {
 			return mergeServers(existingFile.get(), serverids);
 		}
+		if (fileMap.containsKey(filepath)) {
+			return mergeServers(fileMap.get(filepath), serverids);
+		}
 		if (!usersRepository.existsByUseridLike(userid)) {
 			user = new User(userid);
 			usersRepository.save(user);
@@ -86,6 +89,7 @@ public class FilesController {
 	public File deleteFilesReuqest(String filepath) {
 		File file = filesRepository.findByFilepath(filepath).get();
 		filesRepository.delete(file);
+		fileMap.remove(filepath);
 		//TODO: Test that it's also gone from owning servers
 		return file;
 	}
