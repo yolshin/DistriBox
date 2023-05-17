@@ -11,6 +11,7 @@ services:
       SERVER_PORT: 8080
       ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
       FSS_DATA_DIR: fss1
+      SERVER_URL: http://fss1:8080
 
   fss2:
     image: maven:3.9.1-eclipse-temurin-17
@@ -24,6 +25,7 @@ services:
       SERVER_PORT: 8081
       ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
       FSS_DATA_DIR: fss2
+      SERVER_URL: http://fss2:8081
 
   fss3:
     image: maven:3.9.1-eclipse-temurin-17
@@ -37,6 +39,7 @@ services:
       SERVER_PORT: 8082
       ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
       FSS_DATA_DIR: fss3
+      SERVER_URL: http://fss3:8082
 
 #  fss4:
 #    image: maven:3.9.1-eclipse-temurin-17
