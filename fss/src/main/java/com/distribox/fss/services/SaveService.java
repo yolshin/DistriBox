@@ -1,8 +1,13 @@
 package com.distribox.fss.services;
 
 import com.distribox.fss.RequestDto;
+import com.distribox.fss.dto.Heartbeat;
+import com.distribox.fss.zookeeper.LeaderObserver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,6 +16,9 @@ import java.io.IOException;
 
 @Service
 public class SaveService {
+
+    @Autowired
+    private HeartbeatService heartbeatService;
 
     @Value("${fss.data.dir}")
     private String dataDir; // which file server service the data is being saved on
@@ -47,6 +55,8 @@ public class SaveService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        heartbeatService.updateFDS(file);
     }
 
 }
