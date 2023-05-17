@@ -39,13 +39,12 @@ public class FilesController {
 		String userid = (String) body.get("userid");
 		User user;
 		List<String> serverids = (List<String>) body.get("serverids");
-		//TODO: Merge if not saved, but in fileMap
 		Optional<File> existingFile = filesRepository.findByFilepath(filepath);
-		if (existingFile.isPresent()) {
-			return mergeServers(existingFile.get(), serverids);
-		}
 		if (fileMap.containsKey(filepath)) {
 			return mergeServers(fileMap.get(filepath), serverids);
+		}
+		if (existingFile.isPresent()) {
+			return mergeServers(existingFile.get(), serverids);
 		}
 		if (!usersRepository.existsByUseridLike(userid)) {
 			user = new User(userid);
