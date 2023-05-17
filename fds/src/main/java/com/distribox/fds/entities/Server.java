@@ -19,7 +19,6 @@ import java.util.*;
 @JsonIgnoreProperties(value = {"files"},allowGetters = true)
 public class Server {
 
-	//TODO: Remove URL from Server
 	public Server() {
 		this.id = UUID.randomUUID().toString();
 	}
@@ -64,10 +63,12 @@ public class Server {
 		return files;
 	}
 
-
-	public String url;
 	private Long lastSeen = System.currentTimeMillis();
 
+	/**
+	 * Update the server's last seen property to the current time
+	 * @return The new "last seen" value
+	 */
 	Long updateLastSeen() {
 		lastSeen = System.currentTimeMillis();
 		return lastSeen;
@@ -94,7 +95,6 @@ public class Server {
 		return "Server{" +
 				"id=" + id +
 				", state=" + state +
-				", url='" + url + '\'' +
 				", lastSeen=" + lastSeen +
 				'}';
 	}
