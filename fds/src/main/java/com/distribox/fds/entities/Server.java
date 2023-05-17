@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import java.util.*;
 
-//todo: add last-seen
 //"busy"" if more than 10 seconds since thing
 //can represnt with query - if lower than
 
@@ -20,6 +19,7 @@ import java.util.*;
 @JsonIgnoreProperties(value = {"files"},allowGetters = true)
 public class Server {
 
+	//TODO: Remove URL from Server
 	public Server() {
 		this.id = UUID.randomUUID().toString();
 	}

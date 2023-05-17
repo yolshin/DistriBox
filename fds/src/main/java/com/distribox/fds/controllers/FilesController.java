@@ -10,11 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @RestController
@@ -84,9 +83,11 @@ public class FilesController {
 	 */
 	@PostMapping("/savedFile")
 	public ResponseEntity<String> saveAck(@RequestBody String filePath) {
-		File fileToSave = fileMap.get(filePath);
+		String decodedPath = UriUtils.decode(filePath, StandardCharsets.UTF_8)
+				.replaceAll("filePath=", "");
+		File fileToSave = fileMap.get(decodedPath);
 		if (fileToSave == null) {
-			return ResponseEntity.badRequest().body("Invalid filepath");
+				return ResponseEntity.badRequest().body("Invalid filepath");
 		}
 		fileToSave = filesRepository.save(fileToSave);
 		Set<Server> serverSet = fileToSave.getServers();
@@ -97,10 +98,31 @@ public class FilesController {
 			serversRepository.save(server);
 		}
 		filesRepository.save(fileToSave);
-		fileMap.remove(filePath);
+		fileMap.remove(decodedPath);
 
 		return ResponseEntity.ok("OK");
 	}
 
 	//TODO: Send DB updates to other DBs
+
+	@DeleteMapping("/removeServerFromFile")
+	public ResponseEntity<String> removeServerFromFile(@RequestBody Map<String, String>removeInfo) {
+		String filePath = removeInfo.get("filePath");
+		String serverid = removeInfo.get("serverid");
+		Optional<File> fileOpt = filesRepository.findByFilepath(filePath);
+		if (fileOpt.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		File file = fileOpt.get();
+		Optional<Server> serverOpt = serversRepository.findById(serverid);
+		if (serverOpt.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		Server server = serverOpt.get();
+		file.removeServer(server);
+		file = filesRepository.save(file);
+		server = serversRepository.save(server);
+		return ResponseEntity.ok("Removed " + serverid + " from " + filePath);
+	}
+
 }

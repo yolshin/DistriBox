@@ -44,9 +44,10 @@ public class SharedTests {
 	public void setupDB() {
 		List<File> files;
 		List<User> users;
-		Server s1 = new Server();
-		s1.setUrl("this is arbitrary as far as the FDS is concerned");
+		Server s1 = new Server("s1");
+		Server s2 = new Server("s2");
 		s1 = serversRepository.save(s1);
+		s2 = serversRepository.save(s2);
 		log.info("S1: " + s1.toString());
 		users = new ArrayList<>();
 		users.add(new User("benE"));
@@ -58,7 +59,9 @@ public class SharedTests {
 
 		files = new ArrayList<>();
 		files.add(new File("benFile", "benE"));
-		files.add(new File("file1", "mberk"));
+		File berkFile = new File("file1", "mberk");
+		berkFile.addServer(s2);
+		files.add(berkFile);
 		files.add(new File("bernerFile", "yberner"));
 		files.add(new File("olFile", "yolshin"));
 		files.forEach(filesRepository::save);
@@ -67,6 +70,7 @@ public class SharedTests {
 
 		files.forEach(filesRepository::save);
 		serversRepository.save(fs1);
+		serversRepository.save(s2);
 	}
 
 	public List<Server> serverList() {
