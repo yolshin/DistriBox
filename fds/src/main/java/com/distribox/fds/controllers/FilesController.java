@@ -83,7 +83,7 @@ public class FilesController {
 	 * @return An OK response if the file exists and is saved, badRequest if not.
 	 */
 	@PostMapping("/savedFile")
-	public ResponseEntity<String> saveAck(String filePath) {
+	public ResponseEntity<String> saveAck(@RequestBody String filePath) {
 		File fileToSave = fileMap.get(filePath);
 		if (fileToSave == null) {
 			return ResponseEntity.badRequest().body("Invalid filepath");

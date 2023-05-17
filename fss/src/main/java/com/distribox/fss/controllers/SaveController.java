@@ -26,7 +26,7 @@ public class SaveController {
         saveService.saveFile(file);
         // Send ACK to FDS. (fds stores metadata of file - metadata includes file name and where it is stored as well
         //  as server status)
-        fdsService.sendAck();
+        fdsService.sendAck(file);
         //TODO: Return response body!
         return "File Saved!";
     }
