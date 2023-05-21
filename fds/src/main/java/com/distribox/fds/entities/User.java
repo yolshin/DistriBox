@@ -2,6 +2,8 @@ package com.distribox.fds.entities;
 
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,7 +28,7 @@ public class User {
 	 * Query all the user's files
 	 */
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-	public List<File> files;
+	public List<File> files = new ArrayList<>();
 
 	@JsonIdentityInfo(
 			generator = ObjectIdGenerators.PropertyGenerator.class,

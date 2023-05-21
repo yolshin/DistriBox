@@ -8,6 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface FilesRepository extends JpaRepository<File, UUID> {
+public interface FilesRepository extends JpaRepository<File, String> {
 	Optional<File> findByFilepath(String id);
 }
