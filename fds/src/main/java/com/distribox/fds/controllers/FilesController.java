@@ -73,7 +73,7 @@ public class FilesController {
 		File newFile = new File(filepath, user);
 		newFile.addServers(serverSet);
 		fileMap.put(newFile.getFilepath(), newFile);
-
+//		ResponseEntity<File> response = saveFileToDB(newFile);
 		return ResponseEntity.ok(newFile);
 	}
 
@@ -119,6 +119,11 @@ public class FilesController {
 		if (fileToSave == null) {
 				return ResponseEntity.badRequest().body("Invalid filepath");
 		}
+		saveFileToDB(fileToSave);
+		return ResponseEntity.ok("OK");
+	}
+
+	private ResponseEntity<File> saveFileToDB(File fileToSave) {
 		fileToSave = filesRepository.save(fileToSave);
 		Set<Server> serverSet = fileToSave.getServers();
 		serverSet = new HashSet<>(serversRepository.saveAll(serverSet));
@@ -128,9 +133,8 @@ public class FilesController {
 			serversRepository.save(server);
 		}
 		filesRepository.save(fileToSave);
-		fileMap.remove(decodedPath);
-
-		return ResponseEntity.ok("OK");
+		fileMap.remove(fileToSave.getFilepath());
+		return ResponseEntity.ok(fileToSave);
 	}
 
 	//TODO: Send DB updates to other DBs
