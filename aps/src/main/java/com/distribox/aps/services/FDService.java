@@ -56,15 +56,16 @@ public class FDService {
 		// get list of file servers from database
 		// return list of file servers
 
-//		String server = "http://localhost:8081/getServerList";
-//		WebClient webClient = WebClient.create();
-//		ArrayList<String> serverList = webClient
-//				.get()
-//				.uri(server)
-//				.retrieve().bodyToMono(new ParameterizedTypeReference<ArrayList<String>>() {
-//				}).block();
+		String server = leaderObserver.getLeaderId();
+		WebClient webClient = WebClient.create();
 
-		return List.of("http://localhost:8081");
+		return webClient
+				.put()
+				.uri(server + "/getFileList")
+				.bodyValue(request.getUserId() + "/" + request.getFilePath() + "/" + request.getFileName())
+				.retrieve()
+				.bodyToMono(new ParameterizedTypeReference<List<String>>(){})
+				.block();
 	}
 
 	/**

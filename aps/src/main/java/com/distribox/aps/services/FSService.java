@@ -124,7 +124,9 @@ public class FSService {
 			String ack = webClient
 					.delete()
 					.uri(server + "/deleteFile")
-					.retrieve().bodyToMono(String.class).block();
+					.retrieve()
+					.bodyToMono(String.class)
+					.block();
 
 			if (ack == null) { //? Does this work?
 				return "File not deleted from all servers! Try again!";

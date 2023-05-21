@@ -6,16 +6,15 @@ import com.distribox.fds.entities.User;
 import com.distribox.fds.repos.FilesRepository;
 import com.distribox.fds.repos.ServersRepository;
 import com.distribox.fds.repos.UsersRepository;
+import io.swagger.v3.oas.annotations.servers.Servers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class FilesController {
@@ -58,14 +57,29 @@ public class FilesController {
 	}
 
 
-	@GetMapping("/getFile")
-	public ResponseEntity<File> getFileById(String filePath) {
+	@PutMapping("/getFile")
+	public ResponseEntity<File> getFileById(@RequestBody String filePath) {
 		Optional<File> fileOp = filesRepository.findByFilepath(filePath);
 		if (fileOp.isEmpty()) {
 			return ResponseEntity.badRequest().body(null);
 		} else {
 			File file = fileOp.get();
 			return ResponseEntity.ok(file);
+		}
+	}
+
+	@PutMapping("/getFileList")
+	public ResponseEntity<List<String>> getFileServerListById(@RequestBody String filePath) {
+		Optional<File> fileOp = filesRepository.findByFilepath(filePath);
+		if (fileOp.isEmpty()) {
+			return ResponseEntity.badRequest().body(null);
+		} else {
+			File file = fileOp.get();
+			return ResponseEntity.ok(
+					file.getServers()
+					.stream()
+					.map(Server::getId)
+					.collect(Collectors.toList()));
 		}
 	}
 

@@ -6,7 +6,6 @@ import lombok.Data;
 public class RequestDto {
 
     private String userId;
-
     private String filePath;
     private String fileName;
     private String fileContents;
