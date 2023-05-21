@@ -17,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
+import java.net.http.HttpClient;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,9 +63,10 @@ public class FilesControllerTest extends SharedTests {
 		ResponseEntity<String> savedResponse = restTemplate.postForEntity("http://localhost:" + port +
 						"/savedFile?filePath=" + filePath2, null, String.class);
 		assertTrue(savedResponse.getStatusCode().is2xxSuccessful());
-		ResponseEntity<Map> responseEntity =
-				restTemplate.getForEntity("http://localhost:" + port + "/getFile?filePath=" + filePath2,
-				Map.class);
+		RequestEntity<String> re = RequestEntity.method(HttpMethod.POST, "http://localhost:" + port +
+						"/getFile")
+				.body("filePath=" + filePath2);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(re, String.class);
 		assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
 	}
 

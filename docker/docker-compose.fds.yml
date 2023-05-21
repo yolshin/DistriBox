@@ -1,26 +1,25 @@
 services:
-#    postgresdb1:
-#        image: postgres:15.2-alpine
-#        restart: always
-#        ports:
-#            - 3000:5432
-#        environment:
-#            POSTGRES_PASSWORD: example
-#    postgresdb2:
-#        image: postgres:15.2-alpine
-#        restart: always
-#        ports:
-#            - 3001:5432
-#        environment:
-#            POSTGRES_PASSWORD: example
-#    postgresdb3:
-#        image: postgres:15.2-alpine
-#        restart: always
-#        ports:
-#            - 3002:5432
-#        environment:
-#            POSTGRES_PASSWORD: example
-
+    postgresdb1:
+        image: postgres:15.2-alpine
+        restart: always
+        ports:
+            - 3000:5432
+        environment:
+            POSTGRES_PASSWORD: example
+    postgresdb2:
+        image: postgres:15.2-alpine
+        restart: always
+        ports:
+           - 3001:5432
+        environment:
+            POSTGRES_PASSWORD: example
+    postgresdb3:
+        image: postgres:15.2-alpine
+        restart: always
+        ports:
+            - 3002:5432
+        environment:
+            POSTGRES_PASSWORD: example
     fds1:
         image: maven:3.9.1-eclipse-temurin-17
         working_dir: /fds
@@ -29,15 +28,15 @@ services:
         ports: 
             - 8092:8092
         command: mvn spring-boot:run
-#        depends_on:
-#            - postgresdb1
+        depends_on:
+            - postgresdb1
         environment:
             SERVER_PORT: 8092
             SERVER_URL: http://fds1:8092
             ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
-#            SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb1:5432/postgres
-#            SPRING_DATASOURCE_USERNAME: postgres
-#            SPRING_DATASOURCE_PASSWORD: example
+            SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb1:5432/postgres
+            SPRING_DATASOURCE_USERNAME: postgres
+            SPRING_DATASOURCE_PASSWORD: example
     fds2:
         image: maven:3.9.1-eclipse-temurin-17
         working_dir: /fds
@@ -46,15 +45,15 @@ services:
         ports:
             - 8093:8093
         command: mvn spring-boot:run
-#        depends_on:
-#            - postgresdb2
+        depends_on:
+           - postgresdb2
         environment:
             SERVER_PORT: 8093
             SERVER_URL: http://fds2:8093
             ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
-#            SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb2:5432/postgres
-#            SPRING_DATASOURCE_USERNAME: postgres
-#            SPRING_DATASOURCE_PASSWORD: example
+            SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb2:5432/postgres
+            SPRING_DATASOURCE_USERNAME: postgres
+            SPRING_DATASOURCE_PASSWORD: example
     fds3:
         image: maven:3.9.1-eclipse-temurin-17
         working_dir: /fds
@@ -63,15 +62,15 @@ services:
         ports:
             - 8094:8094
         command: mvn spring-boot:run
-#        depends_on:
-#            - postgresdb3
+        depends_on:
+           - postgresdb3
         environment:
             SERVER_PORT: 8094
             SERVER_URL: http://fds3:8094
             ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
-#            SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb3:5432/postgres
-#            SPRING_DATASOURCE_USERNAME: postgres
-#            SPRING_DATASOURCE_PASSWORD: example
+            SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb3:5432/postgres
+            SPRING_DATASOURCE_USERNAME: postgres
+            SPRING_DATASOURCE_PASSWORD: example
 # DB administration
 #    adminer:
 #        image: adminer
