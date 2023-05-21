@@ -87,17 +87,22 @@ public class ServersController {
 		serverOpt = serversRepository.findById(serverId);
 		Server server;
 		server = serverOpt.orElseGet(() -> new Server(serverId));
-		if (state == Server.State.OFFLINE) {
-			Set<File> files = server.getFiles();
-			serversRepository.delete(server);
-			return ResponseEntity.ok(files);
-			//TODO: Send APS the list of files, and delete server
-		}
 		server.setLastSeen(lastUsedTime);
 		server.setState(state);
 		serversRepository.save(server);
 		resendRequest(HttpMethod.POST, "/heartbeat", body);
 		return ResponseEntity.ok("OK");
+	}
+
+	@PostMapping("/serverDown")
+	public ResponseEntity<Object> serverDown(@RequestBody Map<String, String> body) {
+		String serverId = body.get("server");
+		Optional<Server> serverOpt;
+		serverOpt = serversRepository.findById(serverId);
+		Server server = serverOpt.orElseGet(() -> new Server(serverId));
+		Set<File> files = server.getFiles();
+		serversRepository.delete(server);
+		return ResponseEntity.ok(files);
 	}
 
 	public void resendRequest(HttpMethod method, String urlPath, Object body) {
