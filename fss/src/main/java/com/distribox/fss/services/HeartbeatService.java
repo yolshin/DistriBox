@@ -6,16 +6,11 @@ import com.distribox.fss.dto.Heartbeat;
 import com.distribox.fss.zookeeper.LeaderObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -61,6 +56,9 @@ public class HeartbeatService {
 
         WebClient client = WebClient.create();
 
+        // TODO: Is this appropriate use of retry? Perhaps we should get rid
+        //  of block() since it waits indefinitely. Might defeat the entire purpose
+        //  of retry.
         client.post()
                 .uri(url)  // Replace with your endpoint URL
                 .body(Mono.just(fileSaveMessage), FileSaveMessage.class)
