@@ -103,9 +103,11 @@ public class FilesController {
 	}
 
 
-	@PutMapping("/getFile")
+	@PostMapping("/getFile")
 	public ResponseEntity<File> getFileById(@RequestBody String filePath) {
-		Optional<File> fileOp = filesRepository.findByFilepath(filePath);
+		String decodedPath = UriUtils.decode(filePath, StandardCharsets.UTF_8)
+				.replaceAll("filePath=", "");
+		Optional<File> fileOp = filesRepository.findByFilepath(decodedPath);
 		if (fileOp.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		} else {
@@ -114,9 +116,11 @@ public class FilesController {
 		}
 	}
 
-	@PutMapping("/getFileList")
+	@PostMapping("/getFileList")
 	public ResponseEntity<List<String>> getFileServerListById(@RequestBody String filePath) {
-		Optional<File> fileOp = filesRepository.findByFilepath(filePath);
+		String decodedPath = UriUtils.decode(filePath, StandardCharsets.UTF_8)
+				.replaceAll("filePath=", "");
+		Optional<File> fileOp = filesRepository.findByFilepath(decodedPath);
 		if (fileOp.isEmpty()) {
 			return ResponseEntity.badRequest().body(null);
 		} else {

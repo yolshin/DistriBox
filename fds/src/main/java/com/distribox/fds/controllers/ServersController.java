@@ -71,7 +71,7 @@ public class ServersController {
 	}
 
 	@PostMapping("/heartbeat")
-	public ResponseEntity<String> postHeartbeat(@RequestBody Map<String, String> body) {
+	public ResponseEntity<Object> postHeartbeat(@RequestBody Map<String, String> body) {
 		//TODO: Add test for heartbeat
 		String serverId = body.get("server");
 		String serverTime = body.get("time");
@@ -87,6 +87,12 @@ public class ServersController {
 		serverOpt = serversRepository.findById(serverId);
 		Server server;
 		server = serverOpt.orElseGet(() -> new Server(serverId));
+		if (state == Server.State.OFFLINE) {
+			Set<File> files = server.getFiles();
+			serversRepository.delete(server);
+			return ResponseEntity.ok(files);
+			//TODO: Send APS the list of files, and delete server
+		}
 		server.setLastSeen(lastUsedTime);
 		server.setState(state);
 		serversRepository.save(server);
