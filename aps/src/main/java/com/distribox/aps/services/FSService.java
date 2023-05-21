@@ -65,6 +65,9 @@ public class FSService {
 			if (ack != null) { //? Does this work?
 				counter++;
 			}
+			if (counter == 3) {
+				return "File sent! To " + counter + " servers: Acks:    " + returnAcks;
+			}
 		}
 		if (counter < 3) {
 			return "File not saved! Only saved on " + counter + " servers! Try again!";
@@ -119,11 +122,22 @@ public class FSService {
 		// delete file from servers
 		// return success message
 		for (String server : servers) {
+
+			ObjectMapper objectMapper = new ObjectMapper();
+			String requestBodyJson = null;
+			try {
+				requestBodyJson = objectMapper.writeValueAsString(request);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException(e);
+			}
+
 			// delete file from server
 			WebClient webClient = WebClient.create();
 			String ack = webClient
-					.delete()
-					.uri(server + "/deleteFile")
+					.post()
+					.uri(server + "/delete")
+					.contentType(MediaType.APPLICATION_JSON)
+					.body(BodyInserters.fromValue(requestBodyJson))
 					.retrieve()
 					.bodyToMono(String.class)
 					.block();

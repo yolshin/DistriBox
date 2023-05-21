@@ -41,18 +41,19 @@ services:
       FSS_DATA_DIR: fss3
       SERVER_URL: http://fss3:8082
 
-#  fss4:
-#    image: maven:3.9.1-eclipse-temurin-17
-#    working_dir: /fss
-#    volumes:
-#      - ./:/fss
-#    ports:
-#      - 8083:8083
-#    command: mvn spring-boot:run
-#    environment:
-#      SERVER_PORT: 8083
-#      ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
-#      FSS_DATA_DIR: fss4
+  fss4:
+    image: maven:3.9.1-eclipse-temurin-17
+    working_dir: /fss
+    volumes:
+      - ../fss/:/fss
+    ports:
+      - 8083:8083
+    command: mvn spring-boot:run
+    environment:
+      SERVER_PORT: 8083
+      ZOOKEEPER_CONNECTIONSTRING: zoo1:2181,zoo2:2181,zoo3:2181
+      FSS_DATA_DIR: fss4
+      SERVER_URL: http://fss4:8083
 #
 #  fss5:
 #    image: maven:3.9.1-eclipse-temurin-17

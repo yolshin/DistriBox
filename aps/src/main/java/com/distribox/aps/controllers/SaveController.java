@@ -45,6 +45,9 @@ public class SaveController {
 		// String fileContents = request.getFileContents();
 
 		List<String> serverList = fdService.getNewServerList(request);
+		if (serverList == null) {
+			return "Not enough servers available. Please try again later.";
+		}
 		String ack = fsService.saveFile(serverList, request);
 		return "SAVE STATUS RESPONSE FROM SERVER: " + ack;
 	}

@@ -1,6 +1,7 @@
 package com.distribox.aps.services;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import com.distribox.aps.dto.FileDataDto;
 import com.distribox.aps.zookeeper.LeaderObserver;
@@ -13,7 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * 
- * Service for File Sistribution Service
+ * Service for File Distribution Service
  * @author @yoberner
  *
  */
@@ -39,12 +40,35 @@ public class FDService {
 		String server = leaderObserver.getLeaderId();
 		WebClient webClient = WebClient.create();
 
-		return webClient
-				.get()
-				.uri(server + "/serverids")
-				.retrieve()
-				.bodyToMono(new ParameterizedTypeReference<ArrayList<String>>(){})
-				.block();
+		ArrayList<String> serverList = null;
+		int retryCount = 0;
+		int maxRetries = 3;
+
+		while (retryCount < maxRetries && (serverList == null || serverList.size() < 3)) {
+			serverList = webClient
+					.get()
+					.uri(server + "/serverids")
+					.retrieve()
+					.bodyToMono(new ParameterizedTypeReference<ArrayList<String>>() {})
+					.block();
+
+			if (serverList == null || serverList.size() < 3) {
+				// Retry after 5 seconds
+				try {
+					TimeUnit.SECONDS.sleep(3);
+				} catch (InterruptedException e) {
+					// Handle the exception
+				}
+				retryCount++;
+			}
+		}
+
+		assert serverList != null;
+		if (serverList.size() < 3) {
+			return null;
+		}
+
+		return serverList;
 	}
 
 	/**
