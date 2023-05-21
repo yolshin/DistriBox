@@ -17,12 +17,6 @@ public class FDSService {
         // Send ACK through HTTP to FDS.
         String leaderUrl = leaderObserver.getLeaderId();
         String filePath = file.getUserId() + "/" + file.getFilePath() + "/" + file.getFileName();
-//        String uri = leaderUrl + "/savedFile?filePath=" + filePath.replaceAll("/", "%2F");
-
-        String uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8081/savedFile")
-                .queryParam("filePath", filePath)
-                .encode()
-                .toUriString();
 
         WebClient webClient = WebClient.create();
 
