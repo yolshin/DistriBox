@@ -55,7 +55,7 @@ public class ServersController {
 	@GetMapping("/servers")
 	@ResponseBody
 	public ResponseEntity<List<Server>> getServersRequest(@RequestParam(required = false) String filePath,
-	                                      @RequestParam(required = false) Server.State state) {
+	                                                      @RequestParam(required = false) Server.State state) {
 		List<Server> servers = getServers(filePath, state);
 		ResponseEntity<List<Server>> response = ResponseEntity.ok(servers);
 		return response;
@@ -64,7 +64,7 @@ public class ServersController {
 	@GetMapping("/serverids")
 	@ResponseBody
 	public ResponseEntity<List<String>> getServerIds(@RequestParam(required = false) String filePath,
-	                                                      @RequestParam(required = false) Server.State state) {
+	                                                 @RequestParam(required = false) Server.State state) {
 		List<String> servers = getServers(filePath, state).stream().map(s -> s.getId()).toList();
 		ResponseEntity<List<String>> response = ResponseEntity.ok(servers);
 		return response;
@@ -75,17 +75,20 @@ public class ServersController {
 		//TODO: Add test for heartbeat
 		String serverId = body.get("server");
 		String serverTime = body.get("time");
+		String serverStateId = body.get("state");
+		Server.State state = Server.State.OPEN;
+		if (serverStateId != null) {
+			serverStateId = serverStateId.toUpperCase();
+			state = Server.State.valueOf(serverStateId);
+		}
 		Long lastUsedTime = Long.parseLong(serverTime);
 		System.out.println("Heartbeat from " + serverId + " at " + lastUsedTime + " received");
 		Optional<Server> serverOpt;
-//		if (serversRepository.count() > 0) {
-			serverOpt = serversRepository.findById(serverId);
-//		} else {
-//			serverOpt = Optional.of(null);
-//		}
+		serverOpt = serversRepository.findById(serverId);
 		Server server;
 		server = serverOpt.orElseGet(() -> new Server(serverId));
 		server.setLastSeen(lastUsedTime);
+		server.setState(state);
 		serversRepository.save(server);
 		resendRequest(HttpMethod.POST, "/heartbeat", body);
 		return ResponseEntity.ok("OK");

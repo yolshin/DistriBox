@@ -106,7 +106,7 @@ public class FilesController {
 	public ResponseEntity<File> getFileById(String filePath) {
 		Optional<File> fileOp = filesRepository.findByFilepath(filePath);
 		if (fileOp.isEmpty()) {
-			return ResponseEntity.badRequest().body(null);
+			return ResponseEntity.notFound().build();
 		} else {
 			File file = fileOp.get();
 			return ResponseEntity.ok(file);
