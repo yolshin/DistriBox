@@ -130,5 +130,17 @@ class ServersControllerTest extends SharedTests {
 		assertEquals(expectedIds, actualIds);
 	}
 
+	@Test
+	public void markAsOffline() {
+		Map<String, Object> body = new HashMap<>();
+		body.put("server", "s1");
+		body.put("time", 0);
+		body.put("state", "OFFLINE");
+		ResponseEntity<List> response = restTemplate.postForEntity("http://localhost:" + port + "/heartbeat", body,
+				List.class);
+		System.out.println(response);
+		Optional<Server> actualServer = serversRepository.findById("s1");
+		assertTrue(actualServer.isEmpty());
+	}
 
 }

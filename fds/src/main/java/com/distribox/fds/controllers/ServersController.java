@@ -81,16 +81,18 @@ public class ServersController {
 			serverStateId = serverStateId.toUpperCase();
 			state = Server.State.valueOf(serverStateId);
 		}
-		if (state == Server.State.OFFLINE) {
-
-			//TODO: Send APS the list of files, and delete server
-		}
 		Long lastUsedTime = Long.parseLong(serverTime);
 		System.out.println("Heartbeat from " + serverId + " at " + lastUsedTime + " received");
 		Optional<Server> serverOpt;
 		serverOpt = serversRepository.findById(serverId);
 		Server server;
 		server = serverOpt.orElseGet(() -> new Server(serverId));
+		if (state == Server.State.OFFLINE) {
+			Set<File> files = server.getFiles();
+			serversRepository.delete(server);
+			return ResponseEntity.ok(files);
+			//TODO: Send APS the list of files, and delete server
+		}
 		server.setLastSeen(lastUsedTime);
 		server.setState(state);
 		serversRepository.save(server);
