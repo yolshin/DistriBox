@@ -3,10 +3,7 @@ package com.distribox.fss.controllers;
 import com.distribox.fss.RequestDto;
 import com.distribox.fss.services.RetrieveService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Optional;
 
 @RestController
 public class GetController {
