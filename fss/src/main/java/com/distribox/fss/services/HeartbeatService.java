@@ -69,14 +69,7 @@ public class HeartbeatService {
                 .body(Mono.just(fileSaveMessage), FileSaveMessage.class)
                 .retrieve()
                 .bodyToMono(Void.class)
-                .retryWhen(Retry.backoff(5, Duration.ofSeconds(30)))
-                .subscribe(
-                        response -> {
-                            System.out.println("Ack received back from FDS to FSS!");
-                        },
-                        error -> {
-                            System.err.println("An error occurred: " + error.getMessage());
-                        }
-                );
+//                .retryWhen(Retry.backoff(3, Duration.ofSeconds(30)))
+                .block();
     }
 }
