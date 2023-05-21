@@ -33,7 +33,7 @@ public class DeleteController {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
         // Send ACK to FDS (?).
-        fdsService.sendAck(file);
+        fdsService.sendDeleteAck(file);
         // TODO: Return response body!
         return ResponseEntity.ok().body("File deleted!");
     }
