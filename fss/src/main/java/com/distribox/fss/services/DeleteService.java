@@ -4,19 +4,26 @@ import com.distribox.fss.RequestDto;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 @Service
 public class DeleteService {
 
-    public String deleteFile(RequestDto file) {
+    public void deleteFile(RequestDto file) throws IOException {
         // Delete file.
-        String username = file.getUserId(); // Will be needed since empty directories cannot be deleted at this point. // TODO: Fill the empty string in with username!
-        String path = username + File.separator + file.getFilePath() + File.separator + file.getFileName(); // includes username (first part) // TODO: Fill this in!
+        String username = file.getUserId(); // Will be needed since empty directories cannot be deleted at this point.
+        String path = username + File.separator + file.getFilePath() + File.separator + file.getFileName(); // includes username (first part)
         File filePath = new File("data" + File.separator + path);
-        if (filePath.exists()) {
-            return String.valueOf(filePath.delete());
+        if (!filePath.exists()) {
+            throw new FileNotFoundException();
+        } else if (filePath.isDirectory()) {
+            throw new IllegalArgumentException("Cannot delete directory!");
         }
-        return null;
+        boolean deleteSuccessful = filePath.delete();
+        if (!deleteSuccessful) {
+            throw new IOException("Delete was not successful!");
+        }
     }
 
 }

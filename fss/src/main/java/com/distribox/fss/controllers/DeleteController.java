@@ -3,9 +3,13 @@ package com.distribox.fss.controllers;
 import com.distribox.fss.RequestDto;
 import com.distribox.fss.services.DeleteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 @RestController
 public class DeleteController {
@@ -14,11 +18,18 @@ public class DeleteController {
     DeleteService deleteService;
 
     @DeleteMapping("/delete")
-    public String delete(@RequestBody RequestDto file) {
+    public ResponseEntity<String> delete(@RequestBody RequestDto file) {
         // Delete file.
-        return deleteService.deleteFile(file);
+        try {
+            deleteService.deleteFile(file);
+        } catch (FileNotFoundException | IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
         // Send ACK to FDS (?).
         // TODO: Return response body!
+        return ResponseEntity.ok().body("File deleted!");
     }
 
 }
