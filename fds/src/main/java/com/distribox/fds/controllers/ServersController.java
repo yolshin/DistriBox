@@ -67,6 +67,7 @@ public class ServersController {
 		String serverId = body.get("server");
 		String serverTime = body.get("time");
 		Long lastUsedTime = Long.parseLong(serverTime);
+		System.out.println("Heartbeat from " + serverId + " at " + lastUsedTime + " received");
 		Optional<Server> serverOpt = serversRepository.findById(serverId);
 		Server server;
 		server = serverOpt.orElseGet(() -> new Server(serverId));

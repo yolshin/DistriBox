@@ -12,7 +12,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -64,6 +66,7 @@ public class HeartbeatService {
                 .body(Mono.just(fileSaveMessage), FileSaveMessage.class)
                 .retrieve()
                 .bodyToMono(Void.class)
+//                .retryWhen(Retry.backoff(3, Duration.ofSeconds(30)))
                 .block();
     }
 }
