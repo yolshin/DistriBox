@@ -2,6 +2,7 @@ package com.distribox.fss.controllers;
 
 import com.distribox.fss.RequestDto;
 import com.distribox.fss.services.FDSService;
+import com.distribox.fss.services.HeartbeatService;
 import com.distribox.fss.services.SaveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,14 @@ public class SaveController {
     @Autowired
     FDSService fdsService;
 
+    @Autowired
+    HeartbeatService heartbeatService;
+
     @PostMapping("/save")
     public ResponseEntity<String> save(@RequestBody RequestDto file) {
+
+        heartbeatService.setAsBusy();
+
         // Save file to disk. (call SaveService)
         try {
             saveService.saveFile(file);
@@ -31,7 +38,10 @@ public class SaveController {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (IOException ioException) {
             return ResponseEntity.internalServerError().body(ioException.getMessage());
+        } finally {
+            heartbeatService.setAsOpen();
         }
+
         // Send ACK to FDS. (fds stores metadata of file - metadata includes file name and where it is stored as well
         //  as server status)
         fdsService.sendAck(file);

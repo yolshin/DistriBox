@@ -23,12 +23,28 @@ public class HeartbeatService {
     @Value("${server.url}")
     private String serverUrl;
 
+    private boolean serverIsBusy = false;
+
+    public void setAsBusy() {
+        serverIsBusy = true;
+        sendHeartbeat();
+    }
+    public void setAsOpen() {
+        serverIsBusy = false;
+        sendHeartbeat();
+    }
+
     @Scheduled(fixedRate = 30000) // Run every 30 seconds
     public void sendHeartbeat() {
         Heartbeat heartbeat = new Heartbeat();
         heartbeat.setServer(serverUrl);
         heartbeat.setTime(String.valueOf(System.currentTimeMillis()));
-        heartbeat.setStatus("OPEN");
+        if (serverIsBusy) {
+            heartbeat.setServer("BUSY");
+        }
+        else {
+            heartbeat.setStatus("OPEN");
+        }
 
         String url = leaderObserver.getLeaderId() + "/heartbeat";
 
