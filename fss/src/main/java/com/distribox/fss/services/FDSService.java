@@ -37,7 +37,7 @@ public class FDSService {
                 .bodyValue(filePath)
                 .retrieve()
                 .bodyToMono(String.class)
-                .retryWhen(Retry.backoff(5, Duration.ofSeconds(30)))
+//                .retryWhen(Retry.backoff(5, Duration.ofSeconds(30)))
                 .block();
 
     }
