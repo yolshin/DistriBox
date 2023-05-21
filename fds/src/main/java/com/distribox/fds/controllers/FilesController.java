@@ -33,12 +33,25 @@ public class FilesController {
 	private static final Logger log = LoggerFactory.getLogger(FilesController.class);
 
 	@PostMapping("/saveFile")
-	public File saveFilesRequest(@RequestBody Map<String, Object> body) {
+	public ResponseEntity<File> saveFilesRequest(@RequestBody Map<String, Object> body) {
 		log.info("Save!");
+		boolean invalid = false;
 		String filepath = (String) body.get("filepath");
 		String userid = (String) body.get("userid");
-		User user;
 		List<String> serverids = (List<String>) body.get("serverids");
+		if (filepath == null || filepath.equals("")) {
+			invalid = true;
+		}
+		if (userid == null || userid.equals("")) {
+			invalid = true;
+		}
+		if (serverids == null || serverids.size() == 0) {
+			invalid = true;
+		}
+		if (invalid) {
+			return ResponseEntity.badRequest().build();
+		}
+		User user;
 		Optional<File> existingFile = filesRepository.findByFilepath(filepath);
 		if (fileMap.containsKey(filepath)) {
 			return mergeServers(fileMap.get(filepath), serverids);
@@ -61,15 +74,15 @@ public class FilesController {
 		newFile.addServers(serverSet);
 		fileMap.put(newFile.getFilepath(), newFile);
 
-		return newFile;
+		return ResponseEntity.ok(newFile);
 	}
 
-	public File mergeServers(File existingFile, List<String>newIds) {
+	public ResponseEntity<File> mergeServers(File existingFile, List<String>newIds) {
 		Set<Server>incomingServerSet = newIds.stream()
 				.map(id -> serversRepository.findById(id).get()).collect(Collectors.toSet());
 		existingFile.addServers(incomingServerSet);
 		fileMap.put(existingFile.getFilepath(), existingFile);
-		return existingFile;
+		return ResponseEntity.ok(existingFile);
 	}
 
 

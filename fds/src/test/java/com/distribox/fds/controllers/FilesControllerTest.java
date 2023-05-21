@@ -134,4 +134,37 @@ public class FilesControllerTest extends SharedTests {
 		s2 = serversRepository.findById(serverid).get();
 		assertFalse(file.getServers().contains(s2));
 	}
+
+	@Test
+	public void noFilepath() {
+		String userId = "mberk";
+		List<String> serverids = List.of("s1");
+		Map<String, Object> body = new HashMap<>();
+		body.put("userid", userId);
+		body.put("serverids", serverids);
+		ResponseEntity<Map> response = restTemplate.postForEntity("http://localhost:" + port + "/saveFile", body,
+				Map.class);
+		assertTrue(response.getStatusCode().is4xxClientError());
+	}
+
+	@Test
+	public void noUserid() {
+		List<String> serverids = List.of("s1");
+		Map<String, Object> body = new HashMap<>();
+		body.put("filepath", "/mberk/noUserId");
+		body.put("serverids", serverids);
+		ResponseEntity<Map> response = restTemplate.postForEntity("http://localhost:" + port + "/saveFile", body,
+				Map.class);
+		assertTrue(response.getStatusCode().is4xxClientError());
+	}
+
+	@Test
+	public void noServerids() {
+		Map<String, Object> body = new HashMap<>();
+		body.put("filepath", "/mberk/noUserId");
+		body.put("userid", "mberk");
+		ResponseEntity<Map> response = restTemplate.postForEntity("http://localhost:" + port + "/saveFile", body,
+				Map.class);
+		assertTrue(response.getStatusCode().is4xxClientError());
+	}
 }
