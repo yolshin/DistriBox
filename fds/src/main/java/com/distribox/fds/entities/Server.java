@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import java.util.*;
 
-//todo: add last-seen
 //"busy"" if more than 10 seconds since thing
 //can represnt with query - if lower than
 
@@ -64,10 +63,12 @@ public class Server {
 		return files;
 	}
 
-
-	public String url;
 	private Long lastSeen = System.currentTimeMillis();
 
+	/**
+	 * Update the server's last seen property to the current time
+	 * @return The new "last seen" value
+	 */
 	Long updateLastSeen() {
 		lastSeen = System.currentTimeMillis();
 		return lastSeen;
@@ -94,7 +95,6 @@ public class Server {
 		return "Server{" +
 				"id=" + id +
 				", state=" + state +
-				", url='" + url + '\'' +
 				", lastSeen=" + lastSeen +
 				'}';
 	}

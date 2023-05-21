@@ -3,12 +3,14 @@ package com.distribox.fds.zookeeper;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
+import org.apache.curator.framework.recipes.leader.Participant;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,11 +18,28 @@ import java.util.concurrent.Executors;
 public class ZookeeperConfig {
 
     private CuratorFramework client;
+    public LeaderLatch leaderLatch;
     @Value("${zookeeper.connectionString}")
     private String connectionString;
 
     @Value("${server.url}")
     private String url;
+
+    public boolean isLeader() {
+        try {
+            String leaderId = leaderLatch.getLeader().getId();
+            return leaderId.equals(url);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public String leaderId() {
+        try {
+            return leaderLatch.getLeader().getId();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Bean
     public CuratorFramework curatorFramework() throws Exception {
@@ -33,7 +52,7 @@ public class ZookeeperConfig {
 
         // Create the LeaderLatch
         //allows the FDS to participate in leader election
-        LeaderLatch leaderLatch = new LeaderLatch(client, "/my-group", url);
+        leaderLatch = new LeaderLatch(client, "/my-group", url);
         leaderLatch.start();
         // Run the code in a loop
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -74,6 +93,14 @@ public class ZookeeperConfig {
 
     public CuratorFramework getClient() {
         return client;
+    }
+
+    public List<Participant> getParticipants() {
+        try {
+            return leaderLatch.getParticipants().stream().toList();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void stop() {

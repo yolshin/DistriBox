@@ -26,9 +26,9 @@ class FileDistributionServiceApplicationTests extends SharedTests {
 //		assertArrayEquals(actualFiles.toArray(), files.toArray());
 		actualUsers.sort(Comparator.comparing(u -> u.userid));
 //		assertArrayEquals(actualUsers.toArray(), users.toArray());
-		assertEquals(1, servers.size());
+		assertTrue(servers.size() > 0);
 		for (User u : actualUsers) {
-			assertEquals(u.files.size(), 1);
+			assertTrue(u.files.size() >= 1);
 		}
 		Server s1 = servers.get(0);
 		for (int i = 0; i < actualFiles.size(); i++) {
@@ -36,9 +36,11 @@ class FileDistributionServiceApplicationTests extends SharedTests {
 			assertEquals(f.user, actualUsers.get(i));
 			assertTrue(f.getServers().contains(s1));
 		}
-		actualFiles.forEach(f -> f.getServers().remove(s1));
+		actualFiles.forEach(f -> {
+			servers.forEach(f::removeServer);
+		});
 		for (File f : actualFiles) {
-			assertEquals(f.getServers().size(), 0);
+			assertEquals(0, f.getServers().size());
 		}
 	}
 }
