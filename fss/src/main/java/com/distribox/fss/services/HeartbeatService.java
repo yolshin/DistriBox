@@ -40,7 +40,7 @@ public class HeartbeatService {
         heartbeat.setServer(serverUrl);
         heartbeat.setTime(String.valueOf(System.currentTimeMillis()));
         if (serverIsBusy) {
-            heartbeat.setServer("BUSY");
+            heartbeat.setStatus("BUSY");
         }
         else {
             heartbeat.setStatus("OPEN");
