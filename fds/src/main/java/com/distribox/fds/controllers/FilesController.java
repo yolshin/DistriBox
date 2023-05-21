@@ -9,6 +9,7 @@ import com.distribox.fds.repos.UsersRepository;
 import com.distribox.fds.zookeeper.ZookeeperConfig;
 import org.apache.coyote.Request;
 import org.apache.curator.framework.recipes.leader.Participant;
+import io.swagger.v3.oas.annotations.servers.Servers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,14 +103,29 @@ public class FilesController {
 	}
 
 
-	@GetMapping("/getFile")
-	public ResponseEntity<File> getFileById(String filePath) {
+	@PutMapping("/getFile")
+	public ResponseEntity<File> getFileById(@RequestBody String filePath) {
 		Optional<File> fileOp = filesRepository.findByFilepath(filePath);
 		if (fileOp.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		} else {
 			File file = fileOp.get();
 			return ResponseEntity.ok(file);
+		}
+	}
+
+	@PutMapping("/getFileList")
+	public ResponseEntity<List<String>> getFileServerListById(@RequestBody String filePath) {
+		Optional<File> fileOp = filesRepository.findByFilepath(filePath);
+		if (fileOp.isEmpty()) {
+			return ResponseEntity.badRequest().body(null);
+		} else {
+			File file = fileOp.get();
+			return ResponseEntity.ok(
+					file.getServers()
+					.stream()
+					.map(Server::getId)
+					.collect(Collectors.toList()));
 		}
 	}
 

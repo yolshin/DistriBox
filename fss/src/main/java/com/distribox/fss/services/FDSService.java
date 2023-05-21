@@ -26,13 +26,16 @@ public class FDSService {
 
         WebClient webClient = WebClient.create();
 
+        // TODO: Is this appropriate use of retry? Perhaps we should get rid
+        //  of block() since it waits indefinitely. Might defeat the entire purpose
+        //  of retry.
         String responseEntity = webClient.post()
-
-            .uri(leaderUrl + "/savedFile")
-            .bodyValue(filePath)
-            .retrieve()
-            .bodyToMono(String.class)
-            .block();
+                .uri(leaderUrl + "/savedFile")
+                .bodyValue(filePath)
+                .retrieve()
+                .bodyToMono(String.class)
+//                .retryWhen(Retry.backoff(5, Duration.ofSeconds(30)))
+                .block();
 
     }
 

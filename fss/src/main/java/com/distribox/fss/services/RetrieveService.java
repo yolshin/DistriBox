@@ -12,12 +12,18 @@ public class RetrieveService {
     @Value("${fss.data.dir}")
     private String dataDir;
 
-    public String getFile(RequestDto file) {
+    public String getFile(RequestDto file) throws IOException {
         // Get file.
         String fileName = dataDir + File.separator + file.getUserId() + File.separator + file.getFilePath() + File.separator + file.getFileName(); // This includes the full path. // TODO: Fill this in.
         File fileOnDisk = new File(System.getProperty("user.dir") + File.separator + "data" + File.separator + fileName);
-        if (!fileOnDisk.canRead()) {
-            return null;
+        if (!fileOnDisk.exists()) {
+            throw new FileNotFoundException();
+        }
+        else if (fileOnDisk.isDirectory()) {
+            throw new IllegalArgumentException(fileOnDisk.getPath() + " is a directory!");
+        }
+        else if (!fileOnDisk.canRead()) {
+            throw new IllegalArgumentException("File cannot be read: " + fileOnDisk.getPath());
         }
         StringBuilder fileContents = new StringBuilder();
         try (BufferedReader fileReader = new BufferedReader(new FileReader(fileOnDisk))) {
@@ -35,7 +41,7 @@ public class RetrieveService {
                 fileContents.append(line);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IOException("There was a problem reading the file for: " + fileOnDisk.getPath());
         }
         return new String(fileContents);
     }

@@ -1,18 +1,15 @@
 package com.distribox.fss.services;
 
 import com.distribox.fss.RequestDto;
-import com.distribox.fss.dto.Heartbeat;
-import com.distribox.fss.zookeeper.LeaderObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 
 @Service
 public class SaveService {
@@ -23,18 +20,18 @@ public class SaveService {
     @Value("${fss.data.dir}")
     private String dataDir; // which file server service the data is being saved on
 
-    public void saveFile(RequestDto file) {
+    public void saveFile(RequestDto file) throws IOException {
         // Parse file.
 
-        String username = file.getUserId(); // TODO: Fill this in!
-        String filePath = dataDir + File.separator + username + File.separator + file.getFilePath(); // includes username (first part) // TODO: Fill this in!
-        String fileName = file.getFileName(); // Name of file without path. // TODO: Fill this in!
-        String fileContents = file.getFileContents(); // TODO: Fill this in!
+        String username = file.getUserId();
+        String filePath = dataDir + File.separator + username + File.separator + file.getFilePath(); // includes username (first part)
+        String fileName = file.getFileName(); // Name of file without path.
+        String fileContents = file.getFileContents();
 
         System.out.println(fileName);
         System.out.println(username);
         if (fileName.equals(username) || fileName.equals(dataDir) || fileName.equals("data")) {
-            throw new RuntimeException("Illegal file name: " + fileName);
+            throw new IllegalArgumentException("Illegal file name: " + fileName);
         }
 
         String dirPath = System.getProperty("user.dir");
@@ -45,15 +42,15 @@ public class SaveService {
         boolean dirsMade = dirPath1.mkdirs();
         System.out.println("Dirs made: " + dirsMade);
         File fileWithPath = new File(dirPath1.getPath() + File.separator + fileName);
-        try {
-            boolean fileMade = fileWithPath.createNewFile();
-            System.out.println("File made: " + fileMade);
-        } catch (IOException ignored) {
+        if (fileWithPath.exists()) {
+            throw new FileAlreadyExistsException("File already exists: " + fileWithPath.getPath());
         }
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(fileWithPath, true))) {
+            fileWithPath.createNewFile();
+            System.out.println("File made: " + fileWithPath.getPath());
             fileWriter.write(fileContents);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
 
         heartbeatService.updateFDS(file);
