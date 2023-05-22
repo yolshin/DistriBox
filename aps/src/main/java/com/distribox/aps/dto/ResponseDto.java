@@ -6,6 +6,6 @@ import lombok.Data;
 public class ResponseDto {
 
     private String id;
-    private String filePaths;
+    private String state;
 
 }
