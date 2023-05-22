@@ -1,6 +1,7 @@
 package com.distribox.aps.controllers;
 
 import com.distribox.aps.dto.FileDataDto;
+import com.distribox.aps.dto.ResponseDto;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.distribox.aps.services.FDService;
@@ -34,17 +35,7 @@ public class SaveController {
 		// send file to each file server
 		// return success message
 
-		// old way: depricated:
-		// parse file name from string until comma:
-		// String fileName = file.substring(0, file.indexOf(","));
-		// String fileContents = file.substring(file.indexOf(",") + 1);
-
-		// String userId = request.getUserId();
-		// String filePath = request.getFilePath();
-		// String fileName = request.getFileName();
-		// String fileContents = request.getFileContents();
-
-		List<String> serverList = fdService.getNewServerList(request);
+		List<ResponseDto> serverList = fdService.getNewServerList(request);
 		if (serverList == null) {
 			return "Not enough servers available. Please try again later.";
 		}
