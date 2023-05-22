@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UsersController {
@@ -25,10 +26,12 @@ public class UsersController {
     @GetMapping("/user")
     public ResponseEntity<User> getUserFiles(String userid) {
         //check if user exists
-        if (usersRepository.findByUserid(userid) == null) {
+        Optional<User> userOptional = usersRepository.findById(userid);
+        if (userOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(usersRepository.findByUserid(userid));
+        User user = userOptional.get();
+        return ResponseEntity.ok(user);
     }
 
 }
