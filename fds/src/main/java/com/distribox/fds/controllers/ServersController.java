@@ -102,6 +102,7 @@ public class ServersController {
 		Server server = serverOpt.orElseGet(() -> new Server(serverId));
 		Set<File> files = server.getFiles();
 		serversRepository.delete(server);
+		resendRequest(HttpMethod.POST, "/serverDown", body);
 		return ResponseEntity.ok(files);
 	}
 
